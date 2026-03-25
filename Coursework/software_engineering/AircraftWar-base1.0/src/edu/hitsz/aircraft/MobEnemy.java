@@ -7,25 +7,46 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * 普通敌机
- * 不可射击、不掉落道具
+ * 普通敌机类，代表游戏中最基础的敌方单位
+ * 继承自 AbstractAircraft，具有以下特性：
+ * 1. 只能向下飞行，不能射击
+ * 2. 被击毁后不会掉落道具
+ * 3. 飞出屏幕底部时自动销毁
  * @author hitsz
  */
 public class MobEnemy extends AbstractAircraft {
 
+    /**
+     * 构造函数：初始化普通敌机
+     * @param locationX 初始 X 坐标
+     * @param locationY 初始 Y 坐标
+     * @param speedX X 方向速度（通常为 0，直线下落）
+     * @param speedY Y 方向速度（向下飞行，正值）
+     * @param hp 初始生命值
+     */
     public MobEnemy(int locationX, int locationY, int speedX, int speedY, int hp) {
         super(locationX, locationY, speedX, speedY, hp);
     }
 
+    /**
+     * 实现敌机的移动逻辑
+     * 调用父类的 forward() 方法更新位置
+     * 检测是否飞出屏幕底部边界，若出界则标记为无效并销毁
+     */
     @Override
     public void forward() {
         super.forward();
-        // 判定 y 轴向下飞行出界
-        if (locationY >= Main.WINDOW_HEIGHT ) {
-            vanish();
+        // 判定 y 轴向下飞行出界：当敌机到达或超过窗口底部时
+        if (locationY >= Main.WINDOW_HEIGHT) {
+            vanish();  // 标记为无效，等待游戏循环清理
         }
     }
 
+    /**
+     * 实现射击方法
+     * 由于普通敌机不具备射击能力，返回空列表
+     * @return 空的子弹列表，表示无法射击
+     */
     @Override
     public List<BaseBullet> shoot() {
         return new LinkedList<>();
