@@ -1,81 +1,148 @@
 @startuml
 'https://plantuml.com/class-diagram
 
-abstract class AbstractFlyingObject
-{
-    # locationX:int
-    # locationY:int
-    # speedX:int
-    # speedY:int
-    # image:BufferedImage
-    # width:int
-    # height:int
-    # isValid:boolean
+' --- 核心抽象层 ---
 
-    + AbstractFlyingObject(int locationX, int locationY, int speedX, int speedY)
-    + forward():void
-    + crash(AbstractFlyingObject flyingObject):boolean
-    + setLocation(double locationX, double locationY):void
-    + getLocationX():int
-    + getLocationY():int
-    + getSpeedY():int
-    + getImage():BufferedImage
-    + getWidth():int
-    + getHeight():int
-    + notValid():boolean
-    + vanish():void
-}
-abstract class AbstractAircraft
-{
-	# maxHp:int
-    # hp:int
-    + AbstractAircraft(int locationX, int locationY, int speedX, int speedY, int hp)
-    + decreaseHp(int decrease):void
-    + getHp():int
-    + {abstract} shoot():List<BaseBullet>
- }
+abstract class 抽象飞行物 {
+    # 横坐标:int
+    # 纵坐标:int
+    # 水平速度:int
+    # 垂直速度:int
+    # 图像:BufferedImage
+    # 宽度:int
+    # 高度:int
+    # 是否有效:boolean
 
-
-class HeroAircraft {
-    - shootNum:int
-    - power:int
-    - direction:int
-    + HeroAircraft(int locationX, int locationY, int speedX, int speedY, int hp)
-    + forward():void
-    + shoot():List<BaseBullet>
+    + 抽象飞行物(int 横坐标, int 纵坐标, int 水平速度, int 垂直速度)
+    + 向前移动():void
+    + 碰撞检测(抽象飞行物 目标):boolean
+    + 设置坐标(double 横坐标, double 纵坐标):void
+    + 获取横坐标():int
+    + 获取纵坐标():int
+    + 获取垂直速度():int
+    + 获取图像():BufferedImage
+    + 获取宽度():int
+    + 获取高度():int
+    + 是否无效():boolean
+    + 消失():void
 }
 
-AbstractAircraft <|-- HeroAircraft
-
-class MobEnemy {
-    + MobEnemy(int locationX, int locationY, int speedX, int speedY, int hp)
-    + forward():void
-    + shoot():List<BaseBullet>
-}
-AbstractAircraft <|-- MobEnemy
-
-abstract class BaseBullet
-{
-    - power:int
-    + BaseBullet(int locationX, int locationY, int speedX, int speedY, int power)
-    + forward():void
-	+ getPower():int
+abstract class 抽象航空器 {
+    # 最大血量:int
+    # 当前血量:int
+    + 抽象航空器(int 横坐标, int 纵坐标, int 水平速度, int 垂直速度, int 血量)
+    + 减少血量(int 减少值):void
+    + 获取血量():int
+    + {abstract} 发射子弹():List<基础子弹>
 }
 
-class HeroBullet {
-    + HeroBullet(int locationX, int locationY,
-     int speedX, int speedY, int power)
+' --- 英雄机 ---
+
+class 英雄机 {
+    - 射击数量:int
+    - 火力值:int
+    - 方向:int
+    + 英雄机(int 横坐标, int 纵坐标, int 水平速度, int 垂直速度, int 血量)
+    + 向前移动():void
+    + 发射子弹():List<基础子弹>
 }
 
-class EnemyBullet {
-    + EnemyBullet(int locationX, int locationY,
-     int speedX, int speedY, int power)
+' --- 敌机类 (5种) ---
+
+class 普通敌机 {
+    + 普通敌机(int 横坐标, int 纵坐标, int 水平速度, int 垂直速度, int 血量)
+    + 向前移动():void
+    + 发射子弹():List<基础子弹>
 }
 
-BaseBullet <|-- HeroBullet
-BaseBullet <|-- EnemyBullet
+class 精英敌机 {
+    + 精英敌机(int 横坐标, int 纵坐标, int 水平速度, int 垂直速度, int 血量)
+    + 向前移动():void
+    + 发射子弹():List<基础子弹>
+}
 
-AbstractFlyingObject <|-- AbstractAircraft
-AbstractFlyingObject <|-- BaseBullet
+class 精锐敌机 {
+    + 精锐敌机(int 横坐标, int 纵坐标, int 水平速度, int 垂直速度, int 血量)
+    + 向前移动():void
+    + 发射子弹():List<基础子弹>
+}
+
+class 王牌敌机 {
+    + 王牌敌机(int 横坐标, int 纵坐标, int 水平速度, int 垂直速度, int 血量)
+    + 向前移动():void
+    + 发射子弹():List<基础子弹>
+}
+
+class Boss敌机 {
+    + Boss敌机(int 横坐标, int 纵坐标, int 水平速度, int 垂直速度, int 血量)
+    + 向前移动():void
+    + 发射子弹():List<基础子弹>
+}
+
+' --- 子弹类 (2种) ---
+
+abstract class 基础子弹 {
+    - 杀伤力:int
+    + 基础子弹(int 横坐标, int 纵坐标, int 水平速度, int 垂直速度, int 杀伤力)
+    + 向前移动():void
+    + 获取杀伤力():int
+}
+
+class 英雄子弹 {
+    + 英雄子弹(int 横坐标, int 纵坐标, int 水平速度, int 垂直速度, int 杀伤力)
+}
+
+class 敌机子弹 {
+    + 敌机子弹(int 横坐标, int 纵坐标, int 水平速度, int 垂直速度, int 杀伤力)
+}
+
+' --- 道具类 (5种) ---
+
+abstract class 抽象道具 {
+    + 抽象道具(int 横坐标, int 纵坐标, int 水平速度, int 垂直速度)
+    + {abstract} 生效(英雄机 英雄):void
+}
+
+class 加血道具 {
+    + 生效(英雄机 英雄):void
+}
+
+class 火力道具 {
+    + 生效(英雄机 英雄):void
+}
+
+class 超级火力道具 {
+    + 生效(英雄机 英雄):void
+}
+
+class 炸弹道具 {
+    + 生效(英雄机 英雄):void
+}
+
+class 冰冻道具 {
+    + 生效(英雄机 英雄):void
+}
+
+' --- 继承关系定义 ---
+
+抽象飞行物 <|-- 抽象航空器
+抽象飞行物 <|-- 基础子弹
+抽象飞行物 <|-- 抽象道具
+
+抽象航空器 <|-- 英雄机
+抽象航空器 <|-- 普通敌机
+抽象航空器 <|-- 精英敌机
+抽象航空器 <|-- 精锐敌机
+抽象航空器 <|-- 王牌敌机
+抽象航空器 <|-- Boss敌机
+
+基础子弹 <|-- 英雄子弹
+基础子弹 <|-- 敌机子弹
+
+抽象道具 <|-- 加血道具
+抽象道具 <|-- 火力道具
+抽象道具 <|-- 超级火力道具
+抽象道具 <|-- 炸弹道具
+抽象道具 <|-- 冰冻道具
 
 @enduml

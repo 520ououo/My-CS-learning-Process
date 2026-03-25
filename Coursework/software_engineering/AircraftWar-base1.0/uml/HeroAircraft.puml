@@ -1,0 +1,24 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+class 英雄机 {
+    ' 1. 私有静态变量：存储唯一实例
+    - {static} instance:英雄机
+    - shootNum:int
+    - power:int
+    - direction:int
+
+    ' 2. 私有构造函数：防止外部 new 实例
+    - 英雄机(int locationX, int locationY, int speedX, int speedY, int hp)
+
+    ' 3. 静态公有方法：返回唯一实例
+    + {static} getInstance():英雄机
+
+    + forward():void
+    + shoot():List<BaseBullet>
+}
+
+
+note top of 英雄机 : 设计模式：单例模式 (Singleton)
+
+@enduml
