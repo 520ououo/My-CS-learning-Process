@@ -64,10 +64,7 @@ public class Game extends JPanel {
      */
     public Game() {
         // 初始化英雄机，放置在窗口底部中间位置
-        heroAircraft = new HeroAircraft(
-                Main.WINDOW_WIDTH / 2,
-                Main.WINDOW_HEIGHT - ImageManager.HERO_IMAGE.getHeight(),
-                0, 0, 100);
+        heroAircraft = HeroAircraft.getInstance();
 
         // 初始化各种游戏对象列表
         enemyAircrafts = new LinkedList<>();
