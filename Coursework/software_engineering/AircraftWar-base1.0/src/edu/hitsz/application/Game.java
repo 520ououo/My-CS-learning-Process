@@ -1,7 +1,7 @@
 package edu.hitsz.application;
 
 import edu.hitsz.aircraft.*;
-import edu.hitsz.bullet.BaseBullet;
+import edu.hitsz.bullet.*;
 import edu.hitsz.basic.AbstractFlyingObject;
 
 import javax.swing.*;
