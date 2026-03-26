@@ -7,16 +7,16 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * 普通敌机类，代表游戏中最基础的敌方单位
+ * BOSS敌机类
  * 继承自 EnemyAircraft，具有以下特性：
  * 1. 只能向下飞行，不能射击
  * 2. 被击毁后不会掉落道具
  * 3. 飞出屏幕底部时自动销毁
  * @author hitsz
  */
-public class MobEnemy extends EnemyAircraft {
+public class Boss extends EnemyAircraft {
 
-    private static final int DEFAULT_SCORE = 10;
+    private static final int DEFAULT_SCORE = 15;
 
     /**
      * 构造函数：初始化普通敌机
@@ -26,7 +26,7 @@ public class MobEnemy extends EnemyAircraft {
      * @param speedY Y 方向速度（向下飞行，正值）
      * @param hp 初始生命值
      */
-    public MobEnemy(int locationX, int locationY, int speedX, int speedY, int hp) {
+    public Boss(int locationX, int locationY, int speedX, int speedY, int hp) {
         super(locationX, locationY, speedX, speedY, hp, DEFAULT_SCORE);
     }
 

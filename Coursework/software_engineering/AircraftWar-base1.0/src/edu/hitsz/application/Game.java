@@ -197,7 +197,7 @@ public class Game extends JPanel {
                     if (enemyAircraft.notValid()) {
                         // 敌机被击毁，执行奖励逻辑
                         // TODO 获得分数，产生道具补给
-                        score += 10;
+                        score +=  ((EnemyAircraft) enemyAircraft).getScore();
                     }
                 }
                 // 英雄机与敌机相撞，双方均损毁

@@ -9,8 +9,8 @@ abstract class 抽象飞行物 {
     # 水平速度:int
     # 垂直速度:int
     # 图像:BufferedImage
-    # 宽度:int
-    # 高度:int
+    # 位置宽度:int
+    # 位置高度:int
     # 是否有效:boolean
 
     + 抽象飞行物(int 横坐标, int 纵坐标, int 水平速度, int 垂直速度)
@@ -21,9 +21,9 @@ abstract class 抽象飞行物 {
     + 获取纵坐标():int
     + 获取垂直速度():int
     + 获取图像():BufferedImage
-    + 获取宽度():int
-    + 获取高度():int
-    + 是否无效():boolean
+    + 获取位置宽度():int
+    + 获取位置高度():int
+    + 是否消失():boolean
     + 消失():void
 }
 
@@ -71,25 +71,28 @@ class 精英敌机 {
     + 向前移动():void
     + 发射子弹():List<基础子弹>
 }
+note right:血量加厚，发射子弹
 
 class 精锐敌机 {
     + 精锐敌机(int 横坐标, int 纵坐标, int 水平速度, int 垂直速度, int 血量)
     + 向前移动():void
     + 发射子弹():List<基础子弹>
 }
+note right:发射子弹，左右移动
 
 class 王牌敌机 {
     + 王牌敌机(int 横坐标, int 纵坐标, int 水平速度, int 垂直速度, int 血量)
     + 向前移动():void
     + 发射子弹():List<快速子弹>
 }
+note right:血量加厚，子弹变快，左右移动
 
 class Boss敌机 {
     + Boss敌机(int 横坐标, int 纵坐标, int 水平速度, int 垂直速度, int 血量)
     + 向前移动():void
     + 发射子弹():List<反弹子弹>
 }
-
+note right:血量加厚plus，左右移动，发射反弹子弹
 ' --- 子弹类层级 ---
 
 abstract class 基础子弹 {

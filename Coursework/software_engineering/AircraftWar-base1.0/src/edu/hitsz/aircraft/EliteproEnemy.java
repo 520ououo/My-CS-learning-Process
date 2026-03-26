@@ -14,9 +14,9 @@ import java.util.List;
  * 3. 飞出屏幕底部时自动销毁
  * @author hitsz
  */
-public class MobEnemy extends EnemyAircraft {
+public class EliteproEnemy extends EnemyAircraft {
 
-    private static final int DEFAULT_SCORE = 10;
+    private static final int DEFAULT_SCORE = 15;
 
     /**
      * 构造函数：初始化普通敌机
@@ -26,7 +26,7 @@ public class MobEnemy extends EnemyAircraft {
      * @param speedY Y 方向速度（向下飞行，正值）
      * @param hp 初始生命值
      */
-    public MobEnemy(int locationX, int locationY, int speedX, int speedY, int hp) {
+    public EliteproEnemy(int locationX, int locationY, int speedX, int speedY, int hp) {
         super(locationX, locationY, speedX, speedY, hp, DEFAULT_SCORE);
     }
 
