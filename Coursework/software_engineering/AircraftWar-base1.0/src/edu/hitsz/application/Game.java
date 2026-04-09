@@ -46,10 +46,18 @@ public class Game extends JPanel {
     //屏幕中出现的敌机最大数量
     private final int enemyMaxNumber = 5;
 
-    /** 敌机生成周期（帧数），每隔这么多帧生成一架敌机 */
+    /** 敌机生成周期（帧数），约 0.8 秒生成一架 */
     protected double enemySpawnCycle = 20;
     /** 敌机生成计数器 */
     private int enemySpawnCounter = 0;
+
+    /** 阶段切换周期（帧数），10 秒 = 250 帧 */
+    private final int phaseCycle = 250;
+    /** 阶段切换计数器 */
+    private int phaseCounter = 0;
+    
+    /** 当前阶段类型（0=精英，1=精锐，2=王牌） */
+    private int currentSpawnPhase = 0;
 
     /** 射击周期（帧数），控制英雄机和敌机的射击频率 */
     protected double shootCycle = 20;
@@ -103,26 +111,35 @@ public class Game extends JPanel {
             @Override
             public void run() {
 
+                // 阶段切换逻辑（每 10 秒切换一次）
+                phaseCounter++;
+                if (phaseCounter >= phaseCycle) {
+                    phaseCounter = 0;
+                    currentSpawnPhase = (currentSpawnPhase + 1) % 3;
+                }
+
                 // 敌机生成逻辑（使用工厂方法模式）
                 enemySpawnCounter++;
                 if (enemySpawnCounter >= enemySpawnCycle) {
                     enemySpawnCounter = 0;
+                    
                     // 产生敌机
                     if (enemyAircrafts.size() < enemyMaxNumber) {
-                        // 概率比 4:2:2:2，总份数为 10
-                        double spawnType = Math.random() * 10;
-                        if (spawnType < 4) {
-                            // 40% 概率生成普通敌机
+                        // 根据当前阶段决定生成哪种特殊敌机
+                        EnemyAircraft specialEnemy = eliteEnemyPrototype;
+                        if (currentSpawnPhase == 1) {
+                            specialEnemy = elitePlusEnemyPrototype;
+                        } else if (currentSpawnPhase == 2) {
+                            specialEnemy = eliteProEnemyPrototype;
+                        }
+                        
+                        // 7:3 概率生成
+                        if (Math.random() < 0.7) {
+                            // 70% 生成普通敌机
                             enemyAircrafts.add(mobEnemyPrototype.createInstance(0, 0));
-                        } else if (spawnType < 6) {
-                            // 20% 概率生成精英敌机
-                            enemyAircrafts.add(eliteEnemyPrototype.createInstance(0, 0));
-                        } else if (spawnType < 8) {
-                            // 20% 概率生成高级精英敌机
-                            enemyAircrafts.add(elitePlusEnemyPrototype.createInstance(0, 0));
                         } else {
-                            // 20% 概率生成超级精英敌机
-                            enemyAircrafts.add(eliteProEnemyPrototype.createInstance(0, 0));
+                            // 30% 生成当前阶段的特殊敌机
+                            enemyAircrafts.add(specialEnemy.createInstance(0, 0));
                         }
                     }
                 }
@@ -404,12 +421,13 @@ public class Game extends JPanel {
 
         for (AbstractFlyingObject object : objects) {
             BufferedImage image = object.getImage();
-            assert image != null : objects.getClass().getName() + " has no image! ";
-            // 将图像中心对准对象坐标进行绘制
-            g.drawImage(image, 
-                    object.getLocationX() - image.getWidth() / 2,
-                    object.getLocationY() - image.getHeight() / 2, 
-                    null);
+            // 移除 assert，改为安全判空
+            if (image != null) {
+                g.drawImage(image, 
+                        object.getLocationX() - image.getWidth() / 2,
+                        object.getLocationY() - image.getHeight() / 2, 
+                        null);
+            }
         }
     }
 

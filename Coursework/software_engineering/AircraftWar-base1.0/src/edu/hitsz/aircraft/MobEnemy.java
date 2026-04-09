@@ -2,7 +2,7 @@ package edu.hitsz.aircraft;
 
 import edu.hitsz.application.Main;
 import edu.hitsz.application.ImageManager;
-import edu.hitsz.bullet.BaseBullet;
+import edu.hitsz.strategy.NoShootStrategy;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -19,16 +19,9 @@ public class MobEnemy extends EnemyAircraft {
 
     private static final int DEFAULT_SCORE = 10;
 
-    /**
-     * 构造函数：初始化普通敌机
-     * @param locationX 初始 X 坐标
-     * @param locationY 初始 Y 坐标
-     * @param speedX X 方向速度（通常为 0，直线下落）
-     * @param speedY Y 方向速度（向下飞行，正值）
-     * @param hp 初始生命值
-     */
     public MobEnemy(int locationX, int locationY, int speedX, int speedY, int hp) {
         super(locationX, locationY, speedX, speedY, hp, DEFAULT_SCORE);
+        this.shootStrategy = new NoShootStrategy();
     }
 
     /**
@@ -39,28 +32,11 @@ public class MobEnemy extends EnemyAircraft {
     @Override
     public void forward() {
         super.forward();
-        // 判定 y 轴向下飞行出界：当敌机到达或超过窗口底部时
         if (locationY >= Main.WINDOW_HEIGHT) {
-            vanish();  // 标记为无效，等待游戏循环清理
+            vanish();
         }
     }
 
-    /**
-     * 实现射击方法
-     * 由于普通敌机不具备射击能力，返回空列表
-     * @return 空的子弹列表，表示无法射击
-     */
-    @Override
-    public List<BaseBullet> shoot() {
-        return new LinkedList<>();
-    }
-
-    /**
-     * 工厂方法：创建普通敌机实例
-     * @param locationX X 坐标（未使用）
-     * @param locationY Y 坐标（未使用）
-     * @return 新创建的普通敌机对象
-     */
     @Override
     public EnemyAircraft createInstance(int locationX, int locationY) {
         int width = ImageManager.MOB_ENEMY_IMAGE.getWidth();

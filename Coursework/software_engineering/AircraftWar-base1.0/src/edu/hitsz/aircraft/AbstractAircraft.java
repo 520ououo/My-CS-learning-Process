@@ -2,6 +2,8 @@ package edu.hitsz.aircraft;
 
 import edu.hitsz.bullet.BaseBullet;
 import edu.hitsz.basic.AbstractFlyingObject;
+import edu.hitsz.strategy.ShootStrategy;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -18,6 +20,8 @@ public abstract class AbstractAircraft extends AbstractFlyingObject {
     protected int maxHp;
     /** 飞机当前的生命值 */
     protected int hp;
+    /** 射击策略 */
+    protected ShootStrategy shootStrategy;
 
     /**
      * 构造函数：初始化飞机的位置和状态
@@ -58,15 +62,24 @@ public abstract class AbstractAircraft extends AbstractFlyingObject {
         return maxHp;
     }
 
+    /**
+     * 设置射击策略
+     * @param strategy 新的射击策略
+     */
+    public void setShootStrategy(ShootStrategy strategy) {
+        this.shootStrategy = strategy;
+    }
 
     /**
-     * 飞机射击方法（抽象方法）
-     * 用于发射子弹，由各子类根据具体需求实现
+     * 飞机射击方法（策略模式：委托给策略对象执行）
      * @return 返回射击产生的子弹列表
-     *         - 可射击的飞机类型需要实现此方法，返回包含子弹的列表
-     *         - 不可射击的飞机类型可以返回空列表
      */
-    public abstract List<BaseBullet> shoot();
+    public List<BaseBullet> shoot() {
+        if (shootStrategy != null) {
+            return shootStrategy.shoot(this);
+        }
+        return new LinkedList<>();
+    }
 
 }
 

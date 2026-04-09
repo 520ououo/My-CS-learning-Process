@@ -48,17 +48,5 @@ public abstract class EnemyAircraft extends AbstractAircraft {
     public int getScore() {
         return score;
     }
-
-    /**
-     * 敌机射击方法
-     * 默认返回空列表，表示无法射击或不需要射击
-     * 具有射击能力的敌机类型应重写此方法
-     * @return 返回射击产生的子弹列表
-     */
-    @Override
-    public List<BaseBullet> shoot() {
-        return new java.util.LinkedList<>();
-    }
-
 }
 

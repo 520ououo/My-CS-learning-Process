@@ -33,7 +33,8 @@ public class BulletItem extends BaseItem {
      */
     @Override
     public void active(HeroAircraft hero) {
-        System.out.println("FireSupply active!");
+        hero.activateSpreadFire();
+        System.out.println("火力道具生效！英雄机切换为散射模式（3发）");
     }
 
 }

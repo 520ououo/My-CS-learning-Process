@@ -2,6 +2,7 @@ package edu.hitsz.aircraft;
 
 import edu.hitsz.application.Main;
 import edu.hitsz.application.ImageManager;
+import edu.hitsz.strategy.SingleShootStrategy;
 import edu.hitsz.bullet.BaseBullet;
 import edu.hitsz.bullet.EnemyBullet;
 
@@ -20,16 +21,9 @@ public class EliteEnemy extends EnemyAircraft {
 
     private static final int DEFAULT_SCORE = 15;
 
-    /**
-     * 构造函数：初始化精英敌机
-     * @param locationX 初始 X 坐标
-     * @param locationY 初始 Y 坐标
-     * @param speedX X 方向速度（通常为 0，直线下落）
-     * @param speedY Y 方向速度（向下飞行，正值）
-     * @param hp 初始生命值
-     */
     public EliteEnemy(int locationX, int locationY, int speedX, int speedY, int hp) {
         super(locationX, locationY, speedX, speedY, hp, DEFAULT_SCORE);
+        this.shootStrategy = new SingleShootStrategy();
     }
 
     /**
@@ -40,39 +34,11 @@ public class EliteEnemy extends EnemyAircraft {
     @Override
     public void forward() {
         super.forward();
-        // 判定 y 轴向下飞行出界：当敌机到达或超过窗口底部时
         if (locationY >= Main.WINDOW_HEIGHT) {
-            vanish();  // 标记为无效，等待游戏循环清理
+            vanish();
         }
     }
 
-    /**
-     * 实现射击方法，精英敌机向下发射子弹
-     * @return 包含发射子弹的列表
-     */
-    @Override
-    public List<BaseBullet> shoot() {
-        List<BaseBullet> res = new LinkedList<>();
-        
-        int x = this.getLocationX();
-        int y = this.getLocationY() + this.getHeight() / 2;
-        
-        int speedX = 0;
-        int speedY = 15;
-        int power = 20;
-        
-        BaseBullet bullet = new EnemyBullet(x, y, speedX, speedY, power);
-        res.add(bullet);
-        
-        return res;
-    }
-
-    /**
-     * 工厂方法：创建精英敌机实例
-     * @param locationX X 坐标（未使用）
-     * @param locationY Y 坐标（未使用）
-     * @return 新创建的精英敌机对象
-     */
     @Override
     public EnemyAircraft createInstance(int locationX, int locationY) {
         int width = ImageManager.ELITE_ENEMY_IMAGE.getWidth();

@@ -37,7 +37,8 @@ public class SuperBulletItem extends BaseItem {
      */
     @Override
     public void active(HeroAircraft hero) {
-        System.out.println("FirePlusSupply active!");
+        hero.activateCircleFire();
+        System.out.println("超级火力道具生效！英雄机切换为环射模式（20发）");
     }
 
 }
