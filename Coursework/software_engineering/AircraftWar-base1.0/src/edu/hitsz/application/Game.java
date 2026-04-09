@@ -3,6 +3,7 @@ package edu.hitsz.application;
 import edu.hitsz.aircraft.*;
 import edu.hitsz.bullet.*;
 import edu.hitsz.basic.AbstractFlyingObject;
+import edu.hitsz.item.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -39,6 +40,8 @@ public class Game extends JPanel {
     private final List<BaseBullet> heroBullets;
     /** 敌机发射的子弹列表 */
     private final List<BaseBullet> enemyBullets;
+    /** 道具列表 */
+    private final List<BaseItem> items;
 
     //屏幕中出现的敌机最大数量
     private final int enemyMaxNumber = 5;
@@ -70,6 +73,7 @@ public class Game extends JPanel {
         enemyAircrafts = new LinkedList<>();
         heroBullets = new LinkedList<>();
         enemyBullets = new LinkedList<>();
+        items = new LinkedList<>();
 
         // 启动英雄机的鼠标控制器，用于响应玩家操作
         new HeroController(this, heroAircraft);
@@ -221,8 +225,14 @@ public class Game extends JPanel {
                     bullet.vanish();  // 子弹消失
                     if (enemyAircraft.notValid()) {
                         // 敌机被击毁，执行奖励逻辑
-                        // TODO 获得分数，产生道具补给
                         score +=  ((EnemyAircraft) enemyAircraft).getScore();
+                        
+                        // 精英敌机被击毁时，以一定概率生成道具
+                        if (enemyAircraft instanceof EliteEnemy) {
+                            if (Math.random() < 0.5) {
+                                spawnItem(enemyAircraft.getLocationX(), enemyAircraft.getLocationY());
+                            }
+                        }
                     }
                 }
                 // 英雄机与敌机相撞，双方均损毁
@@ -233,7 +243,16 @@ public class Game extends JPanel {
             }
         }
 
-        // Todo: 我方获得道具，道具生效
+        // 英雄机获得道具，道具生效
+        for (BaseItem item : items) {
+            if (item.notValid()) {
+                continue;
+            }
+            if (heroAircraft.crash(item)) {
+                item.active(heroAircraft);
+                item.vanish();
+            }
+        }
 
     }
 
@@ -251,7 +270,31 @@ public class Game extends JPanel {
         heroBullets.removeIf(AbstractFlyingObject::notValid);
         // 移除无效的敌机
         enemyAircrafts.removeIf(AbstractFlyingObject::notValid);
-        // Todo: 删除无效道具
+        // 删除无效道具
+        items.removeIf(AbstractFlyingObject::notValid);
+    }
+
+    /**
+     * 生成道具
+     * @param x 道具生成的 X 坐标
+     * @param y 道具生成的 Y 坐标
+     */
+    private void spawnItem(int x, int y) {
+        double itemType = Math.random();
+        BaseItem item;
+        
+        if (itemType < 0.33) {
+            // 加血道具
+            item = new BloodItem(x, y, 0, 5, 30);
+        } else if (itemType < 0.66) {
+            // 火力道具
+            item = new BulletItem(x, y, 0, 5, 1);
+        } else {
+            // 超级火力道具
+            item = new SuperBulletItem(x, y, 0, 5, 2, 20);
+        }
+        
+        items.add(item);
     }
 
     /**
@@ -295,7 +338,8 @@ public class Game extends JPanel {
         paintImageWithPositionRevised(g, heroBullets);
         paintImageWithPositionRevised(g, enemyAircrafts);
 
-        // Todo: 绘制道具
+        // 绘制道具
+        paintImageWithPositionRevised(g, items);
 
         // 绘制英雄机
         g.drawImage(ImageManager.HERO_IMAGE, 

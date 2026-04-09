@@ -93,4 +93,8 @@ public class HeroAircraft extends AbstractAircraft {
         return res;
     }
 
+    public void sethp(int hp){
+        this.hp=hp;
+    }
+
 }

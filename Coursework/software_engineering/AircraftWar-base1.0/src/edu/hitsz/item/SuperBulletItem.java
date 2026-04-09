@@ -37,7 +37,7 @@ public class SuperBulletItem extends BaseItem {
      */
     @Override
     public void active(HeroAircraft hero) {
-        // TODO: 实现增加子弹数量和威力逻辑
+        System.out.println("FirePlusSupply active!");
     }
 
 }

@@ -33,7 +33,10 @@ public class BloodItem extends BaseItem {
      */
     @Override
     public void active(HeroAircraft hero) {
-        // TODO: 实现加血逻辑
+        int currentHp = hero.getHp();
+        int maxHp = hero.getmaxHp();
+        int newHp = Math.min(currentHp + healValue, maxHp);
+        hero.sethp(newHp);
     }
 
 }

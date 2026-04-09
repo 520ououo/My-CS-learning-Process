@@ -33,7 +33,7 @@ public class BulletItem extends BaseItem {
      */
     @Override
     public void active(HeroAircraft hero) {
-        // TODO: 实现增加子弹数量逻辑
+        System.out.println("FireSupply active!");
     }
 
 }
