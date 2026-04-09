@@ -4,16 +4,12 @@ import edu.hitsz.application.Main;
 import edu.hitsz.application.ImageManager;
 import edu.hitsz.strategy.CircleShootStrategy;
 
-import java.util.LinkedList;
-import java.util.List;
-
 /**
  * BOSS敌机类
- * 继承自 EnemyAircraft，具有以下特性：
- * 1. 只能向下飞行，不能射击
- * 2. 被击毁后不会掉落道具
- * 3. 飞出屏幕底部时自动销毁
- * @author hitsz
+ * 特性：
+ * 1. 悬浮于界面上方，仅执行左右移动操作，不向下移动
+ * 2. 采用环射弹道，单次同时发射 20 颗子弹
+ * 3. 被击毁时，随机掉落 3 个道具（道具类型无限制）
  */
 public class Boss extends EnemyAircraft {
 
@@ -26,14 +22,14 @@ public class Boss extends EnemyAircraft {
 
     /**
      * 实现敌机的移动逻辑
-     * 调用父类的 forward() 方法更新位置
-     * 检测是否飞出屏幕底部边界，若出界则标记为无效并销毁
+     * Boss 仅执行左右移动，悬浮于界面上方，不向下移动
      */
     @Override
     public void forward() {
-        super.forward();
-        if (locationY >= Main.WINDOW_HEIGHT) {
-            vanish();
+        locationX += speedX;
+        // 触碰左右边界时反向飞行
+        if (locationX <= 0 || locationX >= Main.WINDOW_WIDTH) {
+            speedX = -speedX;
         }
     }
 
@@ -47,8 +43,11 @@ public class Boss extends EnemyAircraft {
     public EnemyAircraft createInstance(int locationX, int locationY) {
         int width = ImageManager.BOSS_ENEMY_IMAGE.getWidth();
         int x = (int) (Math.random() * (Main.WINDOW_WIDTH - width));
-        int y = (int) (Math.random() * Main.WINDOW_HEIGHT * 0.05);
-        return new Boss(x, y, 0, 5, 200);
+        // Boss 悬浮于界面上方，Y 坐标固定
+        int y = 100;
+        // 随机初始水平移动方向
+        int speedX = Math.random() < 0.5 ? -3 : 3;
+        return new Boss(x, y, speedX, 0, 300);
     }
 
 }

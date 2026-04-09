@@ -1,6 +1,7 @@
 package edu.hitsz.application;
 
 
+import edu.hitsz.aircraft.Boss;
 import edu.hitsz.aircraft.EliteEnemy;
 import edu.hitsz.aircraft.EliteplusEnemy;
 import edu.hitsz.aircraft.EliteproEnemy;
@@ -94,6 +95,7 @@ public class ImageManager {
             CLASSNAME_IMAGE_MAP.put(EliteEnemy.class.getName(), ELITE_ENEMY_IMAGE);
             CLASSNAME_IMAGE_MAP.put(EliteplusEnemy.class.getName(), ELITEPLUS_ENEMY_IMAGE);
             CLASSNAME_IMAGE_MAP.put(EliteproEnemy.class.getName(), ELITEPRO_ENEMY_IMAGE);
+            CLASSNAME_IMAGE_MAP.put(Boss.class.getName(), BOSS_ENEMY_IMAGE);
             CLASSNAME_IMAGE_MAP.put(HeroBullet.class.getName(), HERO_BULLET_IMAGE);
             CLASSNAME_IMAGE_MAP.put(EnemyBullet.class.getName(), ENEMY_BULLET_IMAGE);
             CLASSNAME_IMAGE_MAP.put(BloodItem.class.getName(), BLOOD_ITEM_IMAGE);

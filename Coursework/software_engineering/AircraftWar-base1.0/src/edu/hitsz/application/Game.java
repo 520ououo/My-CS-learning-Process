@@ -59,6 +59,11 @@ public class Game extends JPanel {
     /** 当前阶段类型（0=精英，1=精锐，2=王牌） */
     private int currentSpawnPhase = 0;
 
+    /** Boss 生成阈值分数 */
+    private int bossSpawnScore = 500;
+    /** 标记 Boss 是否已生成 */
+    private boolean bossSpawned = false;
+
     /** 射击周期（帧数），控制英雄机和敌机的射击频率 */
     protected double shootCycle = 20;
     /** 射击计数器 */
@@ -78,6 +83,8 @@ public class Game extends JPanel {
     private final EnemyAircraft elitePlusEnemyPrototype = new EliteplusEnemy(0, 0, 0, 6, 80);
     /** 超级精英敌机原型对象（用于工厂方法模式） */
     private final EnemyAircraft eliteProEnemyPrototype = new EliteproEnemy(0, 0, 0, 7, 100);
+    /** Boss 敌机原型对象 */
+    private final EnemyAircraft bossPrototype = new Boss(0, 0, 0, 0, 300);
 
     /**
      * 构造函数：初始化游戏对象和基本设置
@@ -116,6 +123,13 @@ public class Game extends JPanel {
                 if (phaseCounter >= phaseCycle) {
                     phaseCounter = 0;
                     currentSpawnPhase = (currentSpawnPhase + 1) % 3;
+                }
+
+                // Boss 生成逻辑：当玩家分数达到阈值时生成
+                if (!bossSpawned && score >= bossSpawnScore) {
+                    bossSpawned = true;
+                    enemyAircrafts.add(bossPrototype.createInstance(0, 0));
+                    System.out.println("🔥 Boss 出现！");
                 }
 
                 // 敌机生成逻辑（使用工厂方法模式）
@@ -258,8 +272,21 @@ public class Game extends JPanel {
                         // 敌机被击毁，执行奖励逻辑
                         score +=  ((EnemyAircraft) enemyAircraft).getScore();
                         
+                        // Boss 被击毁时，随机掉落 3 个道具
+                        if (enemyAircraft instanceof Boss) {
+                            int itemY = enemyAircraft.getLocationY();
+                            for (int i = 0; i < 3; i++) {
+                                spawnRandomItem(enemyAircraft.getLocationX(), itemY);
+                                // 每个道具 Y 坐标向下偏移 40 像素，实现竖直紧密排列
+                                itemY += 40;
+                            }
+                            System.out.println(" Boss 被击毁！掉落 3 个道具");
+                            bossSpawned = false;
+                            // 提高下一次生成的分数阈值，避免立即重新生成
+                            bossSpawnScore += 700;
+                        }
                         // 精英敌机被击毁时，以一定概率生成道具
-                        if (enemyAircraft instanceof EliteEnemy) {
+                        else if (enemyAircraft instanceof EliteEnemy) {
                             if (Math.random() < 0.5) {
                                 spawnItem(enemyAircraft.getLocationX(), enemyAircraft.getLocationY());
                             }
@@ -349,6 +376,18 @@ public class Game extends JPanel {
      */
     private void spawnEliteProItem(int x, int y) {
         BaseItem item = BaseItem.createEliteProDropItem(x, y);
+        if (item != null) {
+            items.add(item);
+        }
+    }
+
+    /**
+     * 生成随机道具（5种类型无限制）
+     * @param x 道具生成的 X 坐标
+     * @param y 道具生成的 Y 坐标
+     */
+    private void spawnRandomItem(int x, int y) {
+        BaseItem item = BaseItem.createRandomItem(x, y);
         if (item != null) {
             items.add(item);
         }
