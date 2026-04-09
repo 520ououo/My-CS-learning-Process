@@ -66,6 +66,10 @@ public class Game extends JPanel {
     private final EnemyAircraft mobEnemyPrototype = new MobEnemy(0, 0, 0, 10, 30);
     /** 精英敌机原型对象（用于工厂方法模式） */
     private final EnemyAircraft eliteEnemyPrototype = new EliteEnemy(0, 0, 0, 8, 60);
+    /** 高级精英敌机原型对象（用于工厂方法模式） */
+    private final EnemyAircraft elitePlusEnemyPrototype = new EliteplusEnemy(0, 0, 0, 6, 80);
+    /** 超级精英敌机原型对象（用于工厂方法模式） */
+    private final EnemyAircraft eliteProEnemyPrototype = new EliteproEnemy(0, 0, 0, 7, 100);
 
     /**
      * 构造函数：初始化游戏对象和基本设置
@@ -105,13 +109,20 @@ public class Game extends JPanel {
                     enemySpawnCounter = 0;
                     // 产生敌机
                     if (enemyAircrafts.size() < enemyMaxNumber) {
-                        double spawnType = Math.random();
-                        if (spawnType < 0.2) {
+                        // 概率比 4:2:2:2，总份数为 10
+                        double spawnType = Math.random() * 10;
+                        if (spawnType < 4) {
+                            // 40% 概率生成普通敌机
+                            enemyAircrafts.add(mobEnemyPrototype.createInstance(0, 0));
+                        } else if (spawnType < 6) {
                             // 20% 概率生成精英敌机
                             enemyAircrafts.add(eliteEnemyPrototype.createInstance(0, 0));
+                        } else if (spawnType < 8) {
+                            // 20% 概率生成高级精英敌机
+                            enemyAircrafts.add(elitePlusEnemyPrototype.createInstance(0, 0));
                         } else {
-                            // 80% 概率生成普通敌机
-                            enemyAircrafts.add(mobEnemyPrototype.createInstance(0, 0));
+                            // 20% 概率生成超级精英敌机
+                            enemyAircrafts.add(eliteProEnemyPrototype.createInstance(0, 0));
                         }
                     }
                 }
@@ -236,12 +247,24 @@ public class Game extends JPanel {
                                 spawnItem(enemyAircraft.getLocationX(), enemyAircraft.getLocationY());
                             }
                         }
+                        // 精锐敌机被击毁时，掉落 4 种道具（不含冰冻）
+                        else if (enemyAircraft instanceof EliteplusEnemy) {
+                            if (Math.random() < 0.5) {
+                                spawnElitePlusItem(enemyAircraft.getLocationX(), enemyAircraft.getLocationY());
+                            }
+                        }
+                        // 王牌敌机被击毁时，掉落全部 5 种道具
+                        else if (enemyAircraft instanceof EliteproEnemy) {
+                            if (Math.random() < 0.5) {
+                                spawnEliteProItem(enemyAircraft.getLocationX(), enemyAircraft.getLocationY());
+                            }
+                        }
                     }
                 }
                 // 英雄机与敌机相撞，双方均损毁
                 if (enemyAircraft.crash(heroAircraft) || heroAircraft.crash(enemyAircraft)) {
                     enemyAircraft.vanish();
-                    heroAircraft.decreaseHp(Integer.MAX_VALUE);  // 英雄机立即死亡
+                    heroAircraft.decreaseHp(50);  // 英雄机立即死亡
                 }
             }
         }
@@ -285,6 +308,30 @@ public class Game extends JPanel {
      */
     private void spawnItem(int x, int y) {
         BaseItem item = BaseItem.createEliteDropItem(x, y);
+        if (item != null) {
+            items.add(item);
+        }
+    }
+
+    /**
+     * 生成精锐敌机掉落道具（4种：加血、火力、超级火力、炸弹）
+     * @param x 道具生成的 X 坐标
+     * @param y 道具生成的 Y 坐标
+     */
+    private void spawnElitePlusItem(int x, int y) {
+        BaseItem item = BaseItem.createElitePlusDropItem(x, y);
+        if (item != null) {
+            items.add(item);
+        }
+    }
+
+    /**
+     * 生成王牌敌机掉落道具（5种：加血、火力、超级火力、炸弹、冰冻）
+     * @param x 道具生成的 X 坐标
+     * @param y 道具生成的 Y 坐标
+     */
+    private void spawnEliteProItem(int x, int y) {
+        BaseItem item = BaseItem.createEliteProDropItem(x, y);
         if (item != null) {
             items.add(item);
         }

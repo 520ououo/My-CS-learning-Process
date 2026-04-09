@@ -21,12 +21,12 @@ public class HeroAircraft extends AbstractAircraft {
     private static final HeroAircraft instance =new HeroAircraft(
             Main.WINDOW_WIDTH / 2,
             Main.WINDOW_HEIGHT - ImageManager.HERO_IMAGE.getHeight(),
-            0, 0, 100);
+            0, 0, 10000);
     /** 每次射击时发射的子弹数量，初始为 1 发 */
     private int shootNum = 1;
 
     /** 子弹的威力值，决定对敌机造成的伤害 */
-    private int power = 30;
+    private int power = 50;
 
     /** 
      * 子弹射击方向系数

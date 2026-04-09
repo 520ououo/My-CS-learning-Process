@@ -59,7 +59,7 @@ public class EliteEnemy extends EnemyAircraft {
         
         int speedX = 0;
         int speedY = 15;
-        int power = 10;
+        int power = 20;
         
         BaseBullet bullet = new EnemyBullet(x, y, speedX, speedY, power);
         res.add(bullet);

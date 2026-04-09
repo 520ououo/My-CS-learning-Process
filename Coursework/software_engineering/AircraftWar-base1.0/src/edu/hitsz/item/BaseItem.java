@@ -100,4 +100,28 @@ public abstract class BaseItem extends AbstractFlyingObject {
         return createItem(type, locationX, locationY);
     }
 
+    /**
+     * 简单工厂方法：创建精锐敌机掉落道具
+     * 等概率生成四种类型的道具：加血、火力、超级火力、炸弹（不含冰冻）
+     * @param locationX X 坐标
+     * @param locationY Y 坐标
+     * @return 随机创建的道具对象
+     */
+    public static BaseItem createElitePlusDropItem(int locationX, int locationY) {
+        int type = (int) (Math.random() * 4);
+        return createItem(type, locationX, locationY);
+    }
+
+    /**
+     * 简单工厂方法：创建王牌敌机掉落道具
+     * 等概率生成五种类型的道具：加血、火力、超级火力、炸弹、冰冻
+     * @param locationX X 坐标
+     * @param locationY Y 坐标
+     * @return 随机创建的道具对象
+     */
+    public static BaseItem createEliteProDropItem(int locationX, int locationY) {
+        int type = (int) (Math.random() * 5);
+        return createItem(type, locationX, locationY);
+    }
+
 }
