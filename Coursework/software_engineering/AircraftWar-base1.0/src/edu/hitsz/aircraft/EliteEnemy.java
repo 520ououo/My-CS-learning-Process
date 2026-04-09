@@ -2,6 +2,7 @@ package edu.hitsz.aircraft;
 
 import edu.hitsz.application.Main;
 import edu.hitsz.bullet.BaseBullet;
+import edu.hitsz.bullet.EnemyBullet;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -19,7 +20,7 @@ public class EliteEnemy extends EnemyAircraft {
     private static final int DEFAULT_SCORE = 15;
 
     /**
-     * 构造函数：初始化普通敌机
+     * 构造函数：初始化精英敌机
      * @param locationX 初始 X 坐标
      * @param locationY 初始 Y 坐标
      * @param speedX X 方向速度（通常为 0，直线下落）
@@ -45,13 +46,24 @@ public class EliteEnemy extends EnemyAircraft {
     }
 
     /**
-     * 实现射击方法
-     * 由于普通敌机不具备射击能力，返回空列表
-     * @return 空的子弹列表，表示无法射击
+     * 实现射击方法，精英敌机向下发射子弹
+     * @return 包含发射子弹的列表
      */
     @Override
     public List<BaseBullet> shoot() {
-        return new LinkedList<>();
+        List<BaseBullet> res = new LinkedList<>();
+        
+        int x = this.getLocationX();
+        int y = this.getLocationY() + this.getHeight() / 2;
+        
+        int speedX = 0;
+        int speedY = 15;
+        int power = 15;
+        
+        BaseBullet bullet = new EnemyBullet(x, y, speedX, speedY, power);
+        res.add(bullet);
+        
+        return res;
     }
 
 }

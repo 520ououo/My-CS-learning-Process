@@ -40,6 +40,8 @@ public class ImageManager {
     public static BufferedImage ENEMY_BULLET_IMAGE;
     /** 普通敌机（MobEnemy）图片 */
     public static BufferedImage MOB_ENEMY_IMAGE;
+    /** 精英敌机（EliteEnemy）图片 */
+    public static BufferedImage ELITE_ENEMY_IMAGE;
 
     // 静态代码块：在类加载时执行，负责初始化所有图片资源
     static {
@@ -52,12 +54,14 @@ public class ImageManager {
             MOB_ENEMY_IMAGE = ImageIO.read(new FileInputStream("src/images/mob.png"));
             HERO_BULLET_IMAGE = ImageIO.read(new FileInputStream("src/images/bullet_hero.png"));
             ENEMY_BULLET_IMAGE = ImageIO.read(new FileInputStream("src/images/bullet_enemy.png"));
+            ELITE_ENEMY_IMAGE = ImageIO.read(new FileInputStream("src/images/elite.png"));
 
             // 建立类名与图片的映射关系，便于后续通过反射获取
             CLASSNAME_IMAGE_MAP.put(HeroAircraft.class.getName(), HERO_IMAGE);
             CLASSNAME_IMAGE_MAP.put(MobEnemy.class.getName(), MOB_ENEMY_IMAGE);
             CLASSNAME_IMAGE_MAP.put(HeroBullet.class.getName(), HERO_BULLET_IMAGE);
             CLASSNAME_IMAGE_MAP.put(EnemyBullet.class.getName(), ENEMY_BULLET_IMAGE);
+            CLASSNAME_IMAGE_MAP.put("edu.hitsz.aircraft.EliteEnemy", ELITE_ENEMY_IMAGE);
 
         } catch (IOException e) {
             // 图片加载失败时打印错误信息并退出程序
