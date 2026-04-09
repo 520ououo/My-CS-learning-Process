@@ -33,7 +33,7 @@ public class FreezeItem extends BaseItem {
      */
     @Override
     public void active(HeroAircraft hero) {
-        // TODO: 实现冰冻敌机逻辑
+        System.out.println("Freeze active!");
     }
 
 }

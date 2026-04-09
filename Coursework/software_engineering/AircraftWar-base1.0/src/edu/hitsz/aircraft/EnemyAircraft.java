@@ -1,5 +1,7 @@
 package edu.hitsz.aircraft;
 
+import edu.hitsz.application.ImageManager;
+import edu.hitsz.application.Main;
 import edu.hitsz.bullet.BaseBullet;
 import java.util.List;
 
@@ -29,6 +31,15 @@ public abstract class EnemyAircraft extends AbstractAircraft {
         super(locationX, locationY, speedX, speedY, hp);
         this.score = score;
     }
+
+    /**
+     * 工厂方法：创建敌机实例（工厂方法模式）
+     * 由具体子类实现，返回对应类型的敌机对象
+     * @param locationX X 坐标（未使用，由子类内部生成随机位置）
+     * @param locationY Y 坐标（未使用，由子类内部生成随机位置）
+     * @return 创建的敌机对象
+     */
+    public abstract EnemyAircraft createInstance(int locationX, int locationY);
 
     /**
      * 获取击毁该敌机可获得的分数

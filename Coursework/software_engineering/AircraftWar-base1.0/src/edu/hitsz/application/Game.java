@@ -62,6 +62,11 @@ public class Game extends JPanel {
     /** 游戏结束标志，true 表示游戏已结束 */
     private boolean gameOverFlag = false;
 
+    /** 普通敌机原型对象（用于工厂方法模式） */
+    private final EnemyAircraft mobEnemyPrototype = new MobEnemy(0, 0, 0, 10, 30);
+    /** 精英敌机原型对象（用于工厂方法模式） */
+    private final EnemyAircraft eliteEnemyPrototype = new EliteEnemy(0, 0, 0, 8, 60);
+
     /**
      * 构造函数：初始化游戏对象和基本设置
      */
@@ -94,7 +99,7 @@ public class Game extends JPanel {
             @Override
             public void run() {
 
-                // 敌机生成逻辑
+                // 敌机生成逻辑（使用工厂方法模式）
                 enemySpawnCounter++;
                 if (enemySpawnCounter >= enemySpawnCycle) {
                     enemySpawnCounter = 0;
@@ -103,22 +108,10 @@ public class Game extends JPanel {
                         double spawnType = Math.random();
                         if (spawnType < 0.2) {
                             // 20% 概率生成精英敌机
-                            enemyAircrafts.add(new EliteEnemy(
-                                    (int) (Math.random() * (Main.WINDOW_WIDTH - ImageManager.ELITE_ENEMY_IMAGE.getWidth())),
-                                    (int) (Math.random() * Main.WINDOW_HEIGHT * 0.05),
-                                    0,
-                                    8,
-                                    60
-                            ));
+                            enemyAircrafts.add(eliteEnemyPrototype.createInstance(0, 0));
                         } else {
                             // 80% 概率生成普通敌机
-                            enemyAircrafts.add(new MobEnemy(
-                                    (int) (Math.random() * (Main.WINDOW_WIDTH - ImageManager.MOB_ENEMY_IMAGE.getWidth())),
-                                    (int) (Math.random() * Main.WINDOW_HEIGHT * 0.05),
-                                    0,
-                                    10,
-                                    30
-                            ));
+                            enemyAircrafts.add(mobEnemyPrototype.createInstance(0, 0));
                         }
                     }
                 }
@@ -129,6 +122,8 @@ public class Game extends JPanel {
                 bulletsMoveAction();
                 // 飞机移动
                 aircraftsMoveAction();
+                // 道具移动
+                itemsMoveAction();
                 // 撞击检测
                 crashCheckAction();
                 // 后处理：清理无效对象
@@ -186,6 +181,14 @@ public class Game extends JPanel {
         }
     }
 
+    /**
+     * 道具移动：更新所有道具的位置
+     */
+    private void itemsMoveAction() {
+        for (BaseItem item : items) {
+            item.forward();
+        }
+    }
 
     /**
      * 碰撞检测：处理所有碰撞事件
@@ -275,26 +278,16 @@ public class Game extends JPanel {
     }
 
     /**
-     * 生成道具
+     * 生成道具（使用简单工厂模式）
+     * 精英敌机被击毁时调用，仅生成加血、火力、超级火力三种道具
      * @param x 道具生成的 X 坐标
      * @param y 道具生成的 Y 坐标
      */
     private void spawnItem(int x, int y) {
-        double itemType = Math.random();
-        BaseItem item;
-        
-        if (itemType < 0.33) {
-            // 加血道具
-            item = new BloodItem(x, y, 0, 5, 30);
-        } else if (itemType < 0.66) {
-            // 火力道具
-            item = new BulletItem(x, y, 0, 5, 1);
-        } else {
-            // 超级火力道具
-            item = new SuperBulletItem(x, y, 0, 5, 2, 20);
+        BaseItem item = BaseItem.createEliteDropItem(x, y);
+        if (item != null) {
+            items.add(item);
         }
-        
-        items.add(item);
     }
 
     /**

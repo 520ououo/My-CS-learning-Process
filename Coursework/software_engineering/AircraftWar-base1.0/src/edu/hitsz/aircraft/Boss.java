@@ -1,6 +1,7 @@
 package edu.hitsz.aircraft;
 
 import edu.hitsz.application.Main;
+import edu.hitsz.application.ImageManager;
 import edu.hitsz.bullet.BaseBullet;
 
 import java.util.LinkedList;
@@ -52,6 +53,20 @@ public class Boss extends EnemyAircraft {
     @Override
     public List<BaseBullet> shoot() {
         return new LinkedList<>();
+    }
+
+    /**
+     * 工厂方法：创建Boss敌机实例
+     * @param locationX X 坐标（未使用）
+     * @param locationY Y 坐标（未使用）
+     * @return 新创建的Boss敌机对象
+     */
+    @Override
+    public EnemyAircraft createInstance(int locationX, int locationY) {
+        int width = ImageManager.BOSS_ENEMY_IMAGE.getWidth();
+        int x = (int) (Math.random() * (Main.WINDOW_WIDTH - width));
+        int y = (int) (Math.random() * Main.WINDOW_HEIGHT * 0.05);
+        return new Boss(x, y, 0, 5, 200);
     }
 
 }

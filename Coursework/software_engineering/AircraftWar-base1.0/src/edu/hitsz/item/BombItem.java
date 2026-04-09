@@ -33,7 +33,7 @@ public class BombItem extends BaseItem {
      */
     @Override
     public void active(HeroAircraft hero) {
-        // TODO: 实现全屏炸弹伤害逻辑
+        System.out.println("Bomb active!");
     }
 
 }

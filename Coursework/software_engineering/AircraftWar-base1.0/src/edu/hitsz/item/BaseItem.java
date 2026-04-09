@@ -13,6 +13,13 @@ import edu.hitsz.basic.AbstractFlyingObject;
  */
 public abstract class BaseItem extends AbstractFlyingObject {
 
+    /** 道具类型常量 */
+    public static final int TYPE_BLOOD = 0;         // 加血道具
+    public static final int TYPE_BULLET = 1;        // 火力道具
+    public static final int TYPE_SUPER_BULLET = 2;  // 超级火力道具
+    public static final int TYPE_BOMB = 3;          // 炸弹道具
+    public static final int TYPE_FREEZE = 4;        // 冰冻道具
+
     /**
      * 构造函数：初始化道具的位置和状态
      * @param locationX 初始 X 坐标
@@ -43,6 +50,54 @@ public abstract class BaseItem extends AbstractFlyingObject {
         if (locationY >= edu.hitsz.application.Main.WINDOW_HEIGHT) {
             vanish();  // 标记为无效，等待游戏循环清理
         }
+    }
+
+    /**
+     * 简单工厂方法：根据类型创建道具
+     * @param type 道具类型
+     * @param locationX X 坐标
+     * @param locationY Y 坐标
+     * @return 创建的道具对象，若类型无效则返回 null
+     */
+    public static BaseItem createItem(int type, int locationX, int locationY) {
+        switch (type) {
+            case TYPE_BLOOD:
+                return new BloodItem(locationX, locationY, 0, 5, 30);
+            case TYPE_BULLET:
+                return new BulletItem(locationX, locationY, 0, 5, 1);
+            case TYPE_SUPER_BULLET:
+                return new SuperBulletItem(locationX, locationY, 0, 5, 2, 20);
+            case TYPE_BOMB:
+                return new BombItem(locationX, locationY, 0, 5, 100);
+            case TYPE_FREEZE:
+                return new FreezeItem(locationX, locationY, 0, 5, 5000);
+            default:
+                return null;
+        }
+    }
+
+    /**
+     * 简单工厂方法：随机创建道具
+     * 等概率生成五种类型的道具
+     * @param locationX X 坐标
+     * @param locationY Y 坐标
+     * @return 随机创建的道具对象
+     */
+    public static BaseItem createRandomItem(int locationX, int locationY) {
+        int type = (int) (Math.random() * 5);
+        return createItem(type, locationX, locationY);
+    }
+
+    /**
+     * 简单工厂方法：创建精英敌机掉落道具
+     * 等概率生成三种类型的道具：加血、火力、超级火力
+     * @param locationX X 坐标
+     * @param locationY Y 坐标
+     * @return 随机创建的道具对象
+     */
+    public static BaseItem createEliteDropItem(int locationX, int locationY) {
+        int type = (int) (Math.random() * 3);
+        return createItem(type, locationX, locationY);
     }
 
 }

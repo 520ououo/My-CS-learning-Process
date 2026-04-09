@@ -1,6 +1,7 @@
 package edu.hitsz.aircraft;
 
 import edu.hitsz.application.Main;
+import edu.hitsz.application.ImageManager;
 import edu.hitsz.bullet.BaseBullet;
 import edu.hitsz.bullet.EnemyBullet;
 
@@ -64,6 +65,20 @@ public class EliteEnemy extends EnemyAircraft {
         res.add(bullet);
         
         return res;
+    }
+
+    /**
+     * 工厂方法：创建精英敌机实例
+     * @param locationX X 坐标（未使用）
+     * @param locationY Y 坐标（未使用）
+     * @return 新创建的精英敌机对象
+     */
+    @Override
+    public EnemyAircraft createInstance(int locationX, int locationY) {
+        int width = ImageManager.ELITE_ENEMY_IMAGE.getWidth();
+        int x = (int) (Math.random() * (Main.WINDOW_WIDTH - width));
+        int y = (int) (Math.random() * Main.WINDOW_HEIGHT * 0.05);
+        return new EliteEnemy(x, y, 0, 8, 60);
     }
 
 }

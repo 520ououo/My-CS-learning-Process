@@ -9,6 +9,8 @@ import edu.hitsz.bullet.HeroBullet;
 import edu.hitsz.item.BloodItem;
 import edu.hitsz.item.BulletItem;
 import edu.hitsz.item.SuperBulletItem;
+import edu.hitsz.item.BombItem;
+import edu.hitsz.item.FreezeItem;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -46,12 +48,22 @@ public class ImageManager {
     public static BufferedImage MOB_ENEMY_IMAGE;
     /** 精英敌机（EliteEnemy）图片 */
     public static BufferedImage ELITE_ENEMY_IMAGE;
+    /** 高级精英敌机（EliteplusEnemy）图片 */
+    public static BufferedImage ELITEPLUS_ENEMY_IMAGE;
+    /** 超级精英敌机（EliteproEnemy）图片 */
+    public static BufferedImage ELITEPRO_ENEMY_IMAGE;
+    /** Boss敌机图片 */
+    public static BufferedImage BOSS_ENEMY_IMAGE;
     /** 加血道具图片 */
     public static BufferedImage BLOOD_ITEM_IMAGE;
     /** 火力道具图片 */
     public static BufferedImage BULLET_ITEM_IMAGE;
     /** 超级火力道具图片 */
     public static BufferedImage SUPER_BULLET_ITEM_IMAGE;
+    /** 炸弹道具图片 */
+    public static BufferedImage BOMB_ITEM_IMAGE;
+    /** 冰冻道具图片 */
+    public static BufferedImage FREEZE_ITEM_IMAGE;
 
     // 静态代码块：在类加载时执行，负责初始化所有图片资源
     static {
@@ -65,19 +77,26 @@ public class ImageManager {
             HERO_BULLET_IMAGE = ImageIO.read(new FileInputStream("src/images/bullet_hero.png"));
             ENEMY_BULLET_IMAGE = ImageIO.read(new FileInputStream("src/images/bullet_enemy.png"));
             ELITE_ENEMY_IMAGE = ImageIO.read(new FileInputStream("src/images/elite.png"));
+            ELITEPLUS_ENEMY_IMAGE = ImageIO.read(new FileInputStream("src/images/elitePlus.png"));
+            ELITEPRO_ENEMY_IMAGE = ImageIO.read(new FileInputStream("src/images/elitePro.png"));
+            BOSS_ENEMY_IMAGE = ImageIO.read(new FileInputStream("src/images/boss.png"));
             BLOOD_ITEM_IMAGE = ImageIO.read(new FileInputStream("src/images/prop_blood.png"));
             BULLET_ITEM_IMAGE = ImageIO.read(new FileInputStream("src/images/prop_bullet.png"));
             SUPER_BULLET_ITEM_IMAGE = ImageIO.read(new FileInputStream("src/images/prop_bulletPlus.png"));
+            BOMB_ITEM_IMAGE = ImageIO.read(new FileInputStream("src/images/prop_bomb.png"));
+            FREEZE_ITEM_IMAGE = ImageIO.read(new FileInputStream("src/images/prop_freeze.png"));
 
             // 建立类名与图片的映射关系，便于后续通过反射获取
             CLASSNAME_IMAGE_MAP.put(HeroAircraft.class.getName(), HERO_IMAGE);
             CLASSNAME_IMAGE_MAP.put(MobEnemy.class.getName(), MOB_ENEMY_IMAGE);
+            CLASSNAME_IMAGE_MAP.put(EliteEnemy.class.getName(), ELITE_ENEMY_IMAGE);
             CLASSNAME_IMAGE_MAP.put(HeroBullet.class.getName(), HERO_BULLET_IMAGE);
             CLASSNAME_IMAGE_MAP.put(EnemyBullet.class.getName(), ENEMY_BULLET_IMAGE);
-            CLASSNAME_IMAGE_MAP.put(EliteEnemy.class.getName(), ELITE_ENEMY_IMAGE);
             CLASSNAME_IMAGE_MAP.put(BloodItem.class.getName(), BLOOD_ITEM_IMAGE);
             CLASSNAME_IMAGE_MAP.put(BulletItem.class.getName(), BULLET_ITEM_IMAGE);
             CLASSNAME_IMAGE_MAP.put(SuperBulletItem.class.getName(), SUPER_BULLET_ITEM_IMAGE);
+            CLASSNAME_IMAGE_MAP.put(BombItem.class.getName(), BOMB_ITEM_IMAGE);
+            CLASSNAME_IMAGE_MAP.put(FreezeItem.class.getName(), FREEZE_ITEM_IMAGE);
 
         } catch (IOException e) {
             // 图片加载失败时打印错误信息并退出程序
