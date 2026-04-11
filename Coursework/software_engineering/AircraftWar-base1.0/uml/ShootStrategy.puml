@@ -1,0 +1,40 @@
+@startuml
+' Strategy pattern for shooting trajectories
+
+interface ShootStrategy {
+  + shoot(aircraft: AbstractAircraft, shootNum: int, power: int, direction: int): List<BaseBullet>
+}
+
+class StraightShootStrategy
+class ScatterShootStrategy
+class CircularShootStrategy
+class EmptyShootStrategy
+
+ShootStrategy <|.. StraightShootStrategy
+ShootStrategy <|.. ScatterShootStrategy
+ShootStrategy <|.. CircularShootStrategy
+ShootStrategy <|.. EmptyShootStrategy
+
+abstract class AbstractAircraft {
+  # shootNum: int
+  # power: int
+  # direction: int
+  - shootStrategy: ShootStrategy
+  + shoot(): List<BaseBullet>
+  + setShootStrategy(strategy: ShootStrategy): void
+}
+
+AbstractAircraft --> ShootStrategy : uses
+
+class HeroAircraft
+class BossEnemy
+class FireProp
+class SuperFireProp
+
+AbstractAircraft <|-- HeroAircraft
+AbstractAircraft <|-- BossEnemy
+
+FireProp ..> HeroAircraft : set ScatterShootStrategy
+SuperFireProp ..> HeroAircraft : set CircularShootStrategy
+
+@enduml

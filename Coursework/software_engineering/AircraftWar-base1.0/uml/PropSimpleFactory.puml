@@ -1,0 +1,43 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+class Game
+
+class PropSimpleFactory
+{
+    + createProp(propType: PropType, locationX: int, locationY: int, speedX: int, speedY: int): AbstractProp
+}
+
+enum PropType
+{
+    BLOOD
+    FIRE
+    SUPER_FIRE
+    FREEZE
+    BOMB
+}
+
+abstract class AbstractProp
+
+class BloodProp
+class FireProp
+class SuperFireProp
+class FreezeProp
+class BombProp
+
+Game --> PropSimpleFactory
+PropSimpleFactory ..> PropType
+PropSimpleFactory ..> AbstractProp
+PropSimpleFactory ..> BloodProp
+PropSimpleFactory ..> FireProp
+PropSimpleFactory ..> SuperFireProp
+PropSimpleFactory ..> FreezeProp
+PropSimpleFactory ..> BombProp
+
+AbstractProp <|-- BloodProp
+AbstractProp <|-- FireProp
+AbstractProp <|-- SuperFireProp
+AbstractProp <|-- FreezeProp
+AbstractProp <|-- BombProp
+
+@enduml

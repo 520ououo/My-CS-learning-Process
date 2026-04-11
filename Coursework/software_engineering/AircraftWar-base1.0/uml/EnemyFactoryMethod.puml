@@ -1,0 +1,55 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+class Game
+
+abstract class EnemyFactory
+{
+    + createEnemy(locationX: int, locationY: int, speedX: int, speedY: int, hp: int): AbstractAircraft
+}
+
+class MobEnemyFactory
+{
+    + createEnemy(locationX: int, locationY: int, speedX: int, speedY: int, hp: int): AbstractAircraft
+}
+
+class EliteEnemyFactory
+{
+    + createEnemy(locationX: int, locationY: int, speedX: int, speedY: int, hp: int): AbstractAircraft
+}
+
+class ElitePlusEnemyFactory
+{
+    + createEnemy(locationX: int, locationY: int, speedX: int, speedY: int, hp: int): AbstractAircraft
+}
+
+class EliteProEnemyFactory
+{
+    + createEnemy(locationX: int, locationY: int, speedX: int, speedY: int, hp: int): AbstractAircraft
+}
+
+abstract class AbstractAircraft
+
+class MobEnemy
+class EliteEnemy
+class ElitePlusEnemy
+class EliteProEnemy
+
+Game --> EnemyFactory
+EnemyFactory <|-- MobEnemyFactory
+EnemyFactory <|-- EliteEnemyFactory
+EnemyFactory <|-- ElitePlusEnemyFactory
+EnemyFactory <|-- EliteProEnemyFactory
+
+EnemyFactory ..> AbstractAircraft
+MobEnemyFactory ..> MobEnemy
+EliteEnemyFactory ..> EliteEnemy
+ElitePlusEnemyFactory ..> ElitePlusEnemy
+EliteProEnemyFactory ..> EliteProEnemy
+
+AbstractAircraft <|-- MobEnemy
+AbstractAircraft <|-- EliteEnemy
+AbstractAircraft <|-- ElitePlusEnemy
+AbstractAircraft <|-- EliteProEnemy
+
+@enduml
