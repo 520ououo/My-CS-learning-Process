@@ -492,6 +492,9 @@ public class Game extends JPanel {
         
         List<ScoreRecord> records = scoreDAO.getScoresByDifficulty(difficulty);
         
+        // 按分数降序排序
+        Collections.sort(records);
+        
         if (records.isEmpty()) {
             System.out.println("暂无记录");
         } else {
