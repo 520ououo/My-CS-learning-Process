@@ -3,6 +3,9 @@ package edu.hitsz.application;
 import edu.hitsz.aircraft.*;
 import edu.hitsz.bullet.*;
 import edu.hitsz.basic.AbstractFlyingObject;
+import edu.hitsz.dao.ScoreDAO;
+import edu.hitsz.dao.ScoreDAOImpl;
+import edu.hitsz.dao.ScoreRecord;
 import edu.hitsz.item.*;
 
 import javax.swing.*;
@@ -75,6 +78,15 @@ public class Game extends JPanel {
     /** 游戏结束标志，true 表示游戏已结束 */
     private boolean gameOverFlag = false;
 
+    /** 游戏开始时间（毫秒） */
+    private long gameStartTime = 0;
+
+    /** 当前游戏难度 */
+    private String difficulty = "普通";
+
+    /** DAO 对象 */
+    private ScoreDAO scoreDAO;
+
     /** 普通敌机原型对象（用于工厂方法模式） */
     private final EnemyAircraft mobEnemyPrototype = new MobEnemy(0, 0, 0, 10, 30);
     /** 精英敌机原型对象（用于工厂方法模式） */
@@ -104,6 +116,43 @@ public class Game extends JPanel {
 
         // 创建定时器，用于驱动游戏循环
         this.timer = new Timer("game-action-timer", true);
+
+        // 初始化 DAO
+        this.scoreDAO = new ScoreDAOImpl();
+
+        // 记录游戏开始时间
+        this.gameStartTime = System.currentTimeMillis();
+    }
+
+    /**
+     * 带难度参数的构造函数
+     * @param difficulty 游戏难度
+     */
+    public Game(String difficulty) {
+        this();
+        this.difficulty = difficulty;
+        adjustDifficulty(difficulty);
+    }
+
+    /**
+     * 根据难度调整游戏参数
+     * @param difficulty 难度等级
+     */
+    private void adjustDifficulty(String difficulty) {
+        switch (difficulty) {
+            case "简单":
+                bossSpawnScore = 600;
+                break;
+            case "普通":
+                bossSpawnScore = 500;
+                break;
+            case "困难":
+                bossSpawnScore = 400;
+                break;
+            case "地狱":
+                bossSpawnScore = 300;
+                break;
+        }
     }
 
     /**
@@ -403,7 +452,57 @@ public class Game extends JPanel {
             timer.cancel();  // 取消定时器并终止所有调度任务
             gameOverFlag = true;
             System.out.println("Game Over!");
+            
+            // 记录游戏分数
+            saveGameScore();
         }
+    }
+
+    /**
+     * 保存游戏分数到排行榜
+     */
+    private void saveGameScore() {
+        // 计算游戏用时
+        long gameDuration = System.currentTimeMillis() - gameStartTime;
+        
+        // 创建分数记录
+        ScoreRecord record = new ScoreRecord(
+            "玩家",
+            score,
+            gameDuration,
+            difficulty
+        );
+        
+        // 保存记录
+        scoreDAO.saveScore(record);
+        
+        // 显示当前难度的排行榜
+        displayLeaderboard();
+    }
+
+    /**
+     * 在控制台打印排行榜
+     */
+    private void displayLeaderboard() {
+        System.out.println("\n========== 排行榜 ==========");
+        System.out.println("难度: " + difficulty);
+        System.out.println("========================================");
+        System.out.println("排名    | 玩家名      | 难度        | 分数    | 用时");
+        System.out.println("========================================");
+        
+        List<ScoreRecord> records = scoreDAO.getScoresByDifficulty(difficulty);
+        
+        if (records.isEmpty()) {
+            System.out.println("暂无记录");
+        } else {
+            int rank = 1;
+            for (ScoreRecord record : records) {
+                System.out.printf("%-6d | %s%n", rank, record.toString());
+                rank++;
+            }
+        }
+        
+        System.out.println("========================================\n");
     }
 
     //***********************
