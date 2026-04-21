@@ -102,35 +102,26 @@ public class Game extends JPanel {
      * 构造函数：初始化游戏对象和基本设置
      */
     public Game() {
-        // 初始化英雄机，放置在窗口底部中间位置
         heroAircraft = HeroAircraft.getInstance();
 
-        // 初始化各种游戏对象列表
         enemyAircrafts = new LinkedList<>();
         heroBullets = new LinkedList<>();
         enemyBullets = new LinkedList<>();
         items = new LinkedList<>();
 
-        // 启动英雄机的鼠标控制器，用于响应玩家操作
         new HeroController(this, heroAircraft);
 
-        // 创建定时器，用于驱动游戏循环
         this.timer = new Timer("game-action-timer", true);
 
-        // 初始化 DAO
         this.scoreDAO = new ScoreDAOImpl();
 
-        // 记录游戏开始时间
         this.gameStartTime = System.currentTimeMillis();
     }
 
-    /**
-     * 带难度参数的构造函数
-     * @param difficulty 游戏难度
-     */
     public Game(String difficulty) {
         this();
         this.difficulty = difficulty;
+        ImageManager.setBackgroundImage(difficulty);
         adjustDifficulty(difficulty);
     }
 
