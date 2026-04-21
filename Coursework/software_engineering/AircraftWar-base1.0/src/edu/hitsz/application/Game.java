@@ -364,47 +364,22 @@ public class Game extends JPanel {
             
             SoundManager.playGameOver();
             
-            saveGameScore();
+            showLeaderboardWindow();
         }
     }
 
-    private void saveGameScore() {
+    private void showLeaderboardWindow() {
         long gameDuration = System.currentTimeMillis() - gameStartTime;
         
-        ScoreRecord record = new ScoreRecord(
-            "玩家",
-            score,
-            gameDuration,
-            difficulty
-        );
-        
-        scoreDAO.saveScore(record);
-        
-        displayLeaderboard();
-    }
-
-    private void displayLeaderboard() {
-        System.out.println("\n========== 排行榜 ==========");
-        System.out.println("难度: " + difficulty);
-        System.out.println("========================================");
-        System.out.println("排名    | 玩家名      | 难度        | 分数    | 用时");
-        System.out.println("========================================");
-        
-        List<ScoreRecord> records = scoreDAO.getScoresByDifficulty(difficulty);
-        
-        Collections.sort(records);
-        
-        if (records.isEmpty()) {
-            System.out.println("暂无记录");
-        } else {
-            int rank = 1;
-            for (ScoreRecord record : records) {
-                System.out.printf("%-6d | %s%n", rank, record.toString());
-                rank++;
-            }
-        }
-        
-        System.out.println("========================================\n");
+        SwingUtilities.invokeLater(() -> {
+            LeaderboardWindow leaderboard = new LeaderboardWindow(
+                "玩家",
+                score,
+                gameDuration,
+                difficulty
+            );
+            leaderboard.setVisible(true);
+        });
     }
 
     //***********************

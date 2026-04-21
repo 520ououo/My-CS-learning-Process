@@ -79,6 +79,17 @@ public class ScoreDAOImpl implements ScoreDAO {
         }
     }
 
+    @Override
+    public void deleteScore(String difficulty, int index) {
+        File file = new File(getFilePath(difficulty));
+        List<ScoreRecord> records = loadRecords(file);
+        
+        if (index >= 0 && index < records.size()) {
+            records.remove(index);
+            saveRecords(file, records);
+        }
+    }
+
     /**
      * 从文件加载记录
      */

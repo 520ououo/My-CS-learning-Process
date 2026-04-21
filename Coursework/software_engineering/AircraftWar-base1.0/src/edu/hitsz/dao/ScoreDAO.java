@@ -32,4 +32,11 @@ public interface ScoreDAO {
      * @param difficulty 难度等级
      */
     void clearScores(String difficulty);
+
+    /**
+     * 删除指定难度下的指定记录
+     * @param difficulty 难度等级
+     * @param index 记录索引（0-based）
+     */
+    void deleteScore(String difficulty, int index);
 }
