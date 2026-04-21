@@ -172,6 +172,8 @@ public class Game extends JPanel {
                     SoundManager.playBossBGM();
                 }
 
+                heroAircraft.checkPowerUpExpiration();
+
                 enemySpawnCounter++;
                 if (enemySpawnCounter >= enemySpawnCycle) {
                     enemySpawnCounter = 0;
