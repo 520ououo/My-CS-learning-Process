@@ -22,7 +22,7 @@ public class HeroAircraft extends AbstractAircraft {
     private static final HeroAircraft instance = new HeroAircraft(
             Main.WINDOW_WIDTH / 2,
             Main.WINDOW_HEIGHT - ImageManager.HERO_IMAGE.getHeight(),
-            0, 0, 100);
+            0, 0, 10000);
 
     /**
      * 构造函数：初始化英雄机
