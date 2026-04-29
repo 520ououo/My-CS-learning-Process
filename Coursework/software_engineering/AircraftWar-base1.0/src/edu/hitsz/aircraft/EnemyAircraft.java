@@ -3,50 +3,83 @@ package edu.hitsz.aircraft;
 import edu.hitsz.application.ImageManager;
 import edu.hitsz.application.Main;
 import edu.hitsz.bullet.BaseBullet;
+import edu.hitsz.item.ItemObserver;
 import java.util.List;
 
-/**
- * 敌方飞机的抽象基类，继承自 AbstractAircraft
- * 定义了敌方飞机的通用属性和行为：
- * 1. 提供基础的移动逻辑
- * 2. 定义敌机特有的属性（如得分值）
- * 3. 为不同类型的敌机提供扩展基础
- * @author hitsz
- */
-public abstract class EnemyAircraft extends AbstractAircraft {
+public abstract class EnemyAircraft extends AbstractAircraft implements ItemObserver {
 
-    /** 击毁该敌机可获得的分数 */
     protected int score;
+    
+    protected boolean isFrozen = false;
+    protected int originalSpeedY;
+    protected long freezeEndTime = 0;
+    protected long slowEndTime = 0;
+    protected int slowSpeedY = 0;
 
-    /**
-     * 构造函数：初始化敌方飞机
-     * @param locationX 初始 X 坐标
-     * @param locationY 初始 Y 坐标
-     * @param speedX X 方向的速度
-     * @param speedY Y 方向的速度
-     * @param hp 初始生命值
-     * @param score 击毁该敌机可获得的分数
-     */
     public EnemyAircraft(int locationX, int locationY, int speedX, int speedY, int hp, int score) {
         super(locationX, locationY, speedX, speedY, hp);
         this.score = score;
+        this.originalSpeedY = speedY;
     }
 
-    /**
-     * 工厂方法：创建敌机实例（工厂方法模式）
-     * 由具体子类实现，返回对应类型的敌机对象
-     * @param locationX X 坐标（未使用，由子类内部生成随机位置）
-     * @param locationY Y 坐标（未使用，由子类内部生成随机位置）
-     * @return 创建的敌机对象
-     */
     public abstract EnemyAircraft createInstance(int locationX, int locationY);
 
-    /**
-     * 获取击毁该敌机可获得的分数
-     * @return 分数值
-     */
     public int getScore() {
         return score;
+    }
+    
+    @Override
+    public int onBombEffect() {
+        decreaseHp(9999);
+        if (notValid()) {
+            return score;
+        }
+        return 0;
+    }
+    
+    @Override
+    public int onFreezeEffect() {
+        return 0;
+    }
+    
+    public void applyFreeze(int durationMs) {
+        this.isFrozen = true;
+        this.freezeEndTime = System.currentTimeMillis() + durationMs;
+        this.speedY = 0;
+    }
+    
+    public void applySlow(int durationMs) {
+        this.slowEndTime = System.currentTimeMillis() + durationMs;
+        this.slowSpeedY = (int) (this.originalSpeedY * 0.3);
+        this.speedY = this.slowSpeedY;
+    }
+    
+    public void updateFreezeState() {
+        long currentTime = System.currentTimeMillis();
+        
+        if (isFrozen && currentTime >= freezeEndTime) {
+            isFrozen = false;
+            if (slowEndTime > currentTime) {
+                speedY = slowSpeedY;
+            } else {
+                speedY = originalSpeedY;
+            }
+        }
+        
+        if (slowEndTime > 0 && currentTime >= slowEndTime) {
+            slowEndTime = 0;
+            if (!isFrozen) {
+                speedY = originalSpeedY;
+            }
+        }
+    }
+    
+    @Override
+    public void forward() {
+        if (isFrozen) {
+            return;
+        }
+        super.forward();
     }
 }
 

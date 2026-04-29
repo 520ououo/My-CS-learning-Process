@@ -276,7 +276,7 @@ public class Game extends JPanel {
                                 spawnRandomItem(enemyAircraft.getLocationX(), itemY);
                                 itemY += 40;
                             }
-                            System.out.println(" Boss 被击毁！掉落 3 个道具");
+                            System.out.println("🔥 Boss 被击毁！掉落 3 个道具");
                             SoundManager.playBombExplosion();
                             bossSpawned = false;
                             bossSpawnScore += 700;
@@ -284,17 +284,17 @@ public class Game extends JPanel {
                             SoundManager.playBGM();
                         }
                         else if (enemyAircraft instanceof EliteEnemy) {
-                            if (Math.random() < 0.5) {
+                            if (Math.random() < 0.7) {
                                 spawnItem(enemyAircraft.getLocationX(), enemyAircraft.getLocationY());
                             }
                         }
                         else if (enemyAircraft instanceof EliteplusEnemy) {
-                            if (Math.random() < 0.5) {
+                            if (Math.random() < 0.7) {
                                 spawnElitePlusItem(enemyAircraft.getLocationX(), enemyAircraft.getLocationY());
                             }
                         }
                         else if (enemyAircraft instanceof EliteproEnemy) {
-                            if (Math.random() < 0.5) {
+                            if (Math.random() < 0.7) {
                                 spawnEliteProItem(enemyAircraft.getLocationX(), enemyAircraft.getLocationY());
                             }
                         }
@@ -313,7 +313,53 @@ public class Game extends JPanel {
                 continue;
             }
             if (heroAircraft.crash(item)) {
-                item.active(heroAircraft);
+                if (item instanceof BombItem) {
+                    BombItem bomb = (BombItem) item;
+                    int totalScore = 0;
+                    
+                    for (AbstractAircraft enemy : enemyAircrafts) {
+                        if (!enemy.notValid() && !(enemy instanceof Boss)) {
+                            bomb.addObserver((ItemObserver) enemy);
+                        }
+                    }
+                    
+                    for (BaseBullet bullet : enemyBullets) {
+                        if (!bullet.notValid()) {
+                            bomb.addObserver((ItemObserver) bullet);
+                        }
+                    }
+                    
+                    bomb.active(heroAircraft);
+                    
+                    for (AbstractAircraft enemy : enemyAircrafts) {
+                        if (enemy.notValid() && enemy instanceof EnemyAircraft) {
+                            totalScore += ((EnemyAircraft) enemy).getScore();
+                        }
+                    }
+                    
+                    score += totalScore;
+                    if (totalScore > 0) {
+                        System.out.println("炸弹摧毁敌机，获得 " + totalScore + " 分");
+                    }
+                } else if (item instanceof FreezeItem) {
+                    FreezeItem freeze = (FreezeItem) item;
+                    
+                    for (AbstractAircraft enemy : enemyAircrafts) {
+                        if (!enemy.notValid() && !(enemy instanceof Boss)) {
+                            freeze.addObserver((ItemObserver) enemy);
+                        }
+                    }
+                    
+                    for (BaseBullet bullet : enemyBullets) {
+                        if (!bullet.notValid()) {
+                            freeze.addObserver((ItemObserver) bullet);
+                        }
+                    }
+                    
+                    freeze.active(heroAircraft);
+                } else {
+                    item.active(heroAircraft);
+                }
                 item.vanish();
                 SoundManager.playGetSupply();
             }
@@ -326,6 +372,17 @@ public class Game extends JPanel {
         heroBullets.removeIf(AbstractFlyingObject::notValid);
         enemyAircrafts.removeIf(AbstractFlyingObject::notValid);
         items.removeIf(AbstractFlyingObject::notValid);
+        
+        for (AbstractAircraft enemy : enemyAircrafts) {
+            if (enemy instanceof EnemyAircraft) {
+                ((EnemyAircraft) enemy).updateFreezeState();
+            }
+        }
+        for (BaseBullet bullet : enemyBullets) {
+            if (bullet instanceof EnemyBullet) {
+                ((EnemyBullet) bullet).updateFreezeState();
+            }
+        }
     }
 
     private void spawnItem(int x, int y) {
