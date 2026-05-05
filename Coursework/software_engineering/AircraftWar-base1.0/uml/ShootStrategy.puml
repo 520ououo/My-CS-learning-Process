@@ -1,6 +1,8 @@
 @startuml
 ' Strategy pattern for shooting trajectories
 
+title Strategy Pattern
+
 interface ShootStrategy {
   + shoot(aircraft: AbstractAircraft, shootNum: int, power: int, direction: int): List<BaseBullet>
 }
@@ -27,12 +29,24 @@ abstract class AbstractAircraft {
 AbstractAircraft --> ShootStrategy : uses
 
 class HeroAircraft
+class EliteEnemy
+class ElitePlusEnemy
+class EliteProEnemy
 class BossEnemy
 class FireProp
 class SuperFireProp
 
 AbstractAircraft <|-- HeroAircraft
+AbstractAircraft <|-- EliteEnemy
+AbstractAircraft <|-- ElitePlusEnemy
+AbstractAircraft <|-- EliteProEnemy
 AbstractAircraft <|-- BossEnemy
+
+HeroAircraft ..> StraightShootStrategy
+EliteEnemy ..> StraightShootStrategy
+ElitePlusEnemy ..> StraightShootStrategy
+EliteProEnemy ..> ScatterShootStrategy
+BossEnemy ..> CircularShootStrategy
 
 FireProp ..> HeroAircraft : set ScatterShootStrategy
 SuperFireProp ..> HeroAircraft : set CircularShootStrategy

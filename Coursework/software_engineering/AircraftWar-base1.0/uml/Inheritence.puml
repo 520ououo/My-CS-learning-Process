@@ -31,6 +31,10 @@ abstract class AbstractAircraft
 {
     # maxHp:int
     # hp:int
+    # shootNum:int
+    # power:int
+    # direction:int
+    # shootStrategy:ShootStrategy
     + AbstractAircraft(int locationX, int locationY, int speedX, int speedY, int hp)
     + decreaseHp(int decrease):void
     + increaseHp(int increase):void
@@ -42,9 +46,6 @@ abstract class AbstractAircraft
 class HeroAircraft
 {
     - {static} {volatile} instance:HeroAircraft
-    # shootNum:int
-    # power:int
-    # direction:int
     - HeroAircraft(int locationX, int locationY, int speedX, int speedY, int hp)
     + {static} getInstance(int locationX, int locationY, int speedX, int speedY, int hp):HeroAircraft
     + forward():void
@@ -65,17 +66,12 @@ class EliteEnemy
 
 class ElitePlusEnemy
 {
-    # shootNum:int
-    # power:int
-    # direction:int
     + ElitePlusEnemy(int locationX, int locationY, int speedX, int speedY, int hp)
     + shoot():List<BaseBullet>
 }
 
 class EliteProEnemy
 {
-    # power:int
-    # direction:int
     + EliteProEnemy(int locationX, int locationY, int speedX, int speedY, int hp)
     + shoot():List<BaseBullet>
 }

@@ -1,6 +1,8 @@
 @startuml
 'https://plantuml.com/class-diagram
 
+title Simple Factory Pattern
+
 class Game
 
 class PropSimpleFactory

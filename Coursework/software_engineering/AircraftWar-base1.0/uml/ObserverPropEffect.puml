@@ -1,0 +1,69 @@
+@startuml
+title Observer Pattern - Prop Effect Notification
+
+interface PropEffectObserver {
+  +onBombEffect()
+  +onFreezeEffect()
+}
+
+class PropEffectSubject {
+  -observers : List<PropEffectObserver>
+  +addObserver(observer)
+  +addObservers(observers)
+  +clearObservers()
+  +notifyBombObservers()
+  +notifyFreezeObservers()
+}
+
+abstract class AbstractProp {
+  -propEffectSubject : PropEffectSubject
+  +activate(heroAircraft)
+  +activate(heroAircraft, observers)
+  #setObservers(observers)
+  #notifyBombObservers()
+  #notifyFreezeObservers()
+}
+
+class BombProp {
+  +activate(heroAircraft, observers)
+}
+
+class FreezeProp {
+  +activate(heroAircraft, observers)
+}
+
+abstract class AbstractAircraft {
+  +onBombEffect()
+  +onFreezeEffect()
+}
+
+class MobEnemy
+class EliteEnemy
+class ElitePlusEnemy
+class EliteProEnemy
+class BossEnemy
+class EnemyBullet {
+  +onBombEffect()
+  +onFreezeEffect()
+}
+
+class Game {
+  +collectPropObservers()
+  +crashCheckAction()
+}
+
+PropEffectObserver <|.. AbstractAircraft
+PropEffectObserver <|.. EnemyBullet
+AbstractProp *-- PropEffectSubject
+AbstractProp <|-- BombProp
+AbstractProp <|-- FreezeProp
+AbstractAircraft <|-- MobEnemy
+AbstractAircraft <|-- EliteEnemy
+AbstractAircraft <|-- ElitePlusEnemy
+AbstractAircraft <|-- EliteProEnemy
+AbstractAircraft <|-- BossEnemy
+Game ..> BombProp
+Game ..> FreezeProp
+Game ..> PropEffectObserver : register / notify
+
+@enduml

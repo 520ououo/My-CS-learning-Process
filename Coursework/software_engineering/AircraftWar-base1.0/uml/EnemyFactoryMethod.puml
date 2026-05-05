@@ -1,6 +1,8 @@
 @startuml
 'https://plantuml.com/class-diagram
 
+title Factory Method Pattern
+
 class Game
 
 abstract class EnemyFactory
@@ -28,28 +30,37 @@ class EliteProEnemyFactory
     + createEnemy(locationX: int, locationY: int, speedX: int, speedY: int, hp: int): AbstractAircraft
 }
 
+class BossEnemyFactory
+{
+    + createEnemy(locationX: int, locationY: int, speedX: int, speedY: int, hp: int): AbstractAircraft
+}
+
 abstract class AbstractAircraft
 
 class MobEnemy
 class EliteEnemy
 class ElitePlusEnemy
 class EliteProEnemy
+class BossEnemy
 
 Game --> EnemyFactory
 EnemyFactory <|-- MobEnemyFactory
 EnemyFactory <|-- EliteEnemyFactory
 EnemyFactory <|-- ElitePlusEnemyFactory
 EnemyFactory <|-- EliteProEnemyFactory
+EnemyFactory <|-- BossEnemyFactory
 
 EnemyFactory ..> AbstractAircraft
 MobEnemyFactory ..> MobEnemy
 EliteEnemyFactory ..> EliteEnemy
 ElitePlusEnemyFactory ..> ElitePlusEnemy
 EliteProEnemyFactory ..> EliteProEnemy
+BossEnemyFactory ..> BossEnemy
 
 AbstractAircraft <|-- MobEnemy
 AbstractAircraft <|-- EliteEnemy
 AbstractAircraft <|-- ElitePlusEnemy
 AbstractAircraft <|-- EliteProEnemy
+AbstractAircraft <|-- BossEnemy
 
 @enduml

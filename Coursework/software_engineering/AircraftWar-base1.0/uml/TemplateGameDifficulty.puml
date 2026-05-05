@@ -1,0 +1,48 @@
+@startuml
+title Template Pattern - Game Difficulty Flow
+
+abstract class Game {
+  +createGame(difficulty, backgroundImage, eventListener) : Game
+  +{final} action()
+  #initializeDifficultySettings()
+  #updateDifficultyByTime(gameStepCounter)
+  #canSpawnBoss() : boolean
+  #getBossHpForSpawn(spawnIndex) : int
+  -spawnEnemyAction()
+  -heroShootAction()
+  -enemyShootAction()
+  -crashCheckAction()
+}
+
+class EasyGame {
+  +initializeDifficultySettings()
+  +updateDifficultyByTime(gameStepCounter)
+  +canSpawnBoss() : boolean
+  +getBossHpForSpawn(spawnIndex) : int
+}
+
+class NormalGame {
+  +initializeDifficultySettings()
+  +updateDifficultyByTime(gameStepCounter)
+  +canSpawnBoss() : boolean
+  +getBossHpForSpawn(spawnIndex) : int
+}
+
+class HardGame {
+  +initializeDifficultySettings()
+  +updateDifficultyByTime(gameStepCounter)
+  +canSpawnBoss() : boolean
+  +getBossHpForSpawn(spawnIndex) : int
+}
+
+class MainFrame {
+  -currentGame : Game
+  -startGame(difficulty)
+}
+
+Game <|-- EasyGame
+Game <|-- NormalGame
+Game <|-- HardGame
+MainFrame --> Game : create / use
+
+@enduml

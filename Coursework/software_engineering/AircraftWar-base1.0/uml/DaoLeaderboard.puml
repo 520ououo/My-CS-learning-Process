@@ -1,0 +1,66 @@
+@startuml
+skinparam classAttributeIconSize 0
+
+title DAO Pattern
+
+package "edu.hitsz.model" {
+  class ScoreRecord {
+    - playerName: String
+    - score: int
+    - time: LocalDateTime
+    + getPlayerName(): String
+    + getScore(): int
+    + getTime(): LocalDateTime
+    + formatTime(): String
+  }
+}
+
+package "edu.hitsz.dao" {
+  interface ScoreRecordDao {
+    + getAllRecords(): List<ScoreRecord>
+    + addRecord(record: ScoreRecord): void
+  }
+
+  class FileScoreRecordDao {
+    - filePath: Path
+    + FileScoreRecordDao(difficultyKey: String)
+    + getAllRecords(): List<ScoreRecord>
+    + addRecord(record: ScoreRecord): void
+    - initFile(): void
+  }
+}
+
+package "edu.hitsz.service" {
+  class LeaderboardService {
+    - scoreRecordDao: ScoreRecordDao
+    + LeaderboardService(scoreRecordDao: ScoreRecordDao)
+    + saveAndPrintLatestRanking(playerName: String, score: int): void
+    + printRanking(): void
+  }
+}
+
+package "edu.hitsz.application" {
+  enum GameDifficulty {
+    EASY
+    NORMAL
+    HARD
+  }
+
+  class Game {
+    - difficulty: GameDifficulty
+    - leaderboardService: LeaderboardService
+    - score: int
+    - recordSaved: boolean
+    + Game()
+    + Game(difficulty: GameDifficulty)
+    - checkResultAction(): void
+  }
+}
+
+FileScoreRecordDao ..|> ScoreRecordDao
+ScoreRecordDao --> ScoreRecord
+LeaderboardService --> ScoreRecordDao
+Game --> LeaderboardService
+Game --> GameDifficulty
+
+@enduml
