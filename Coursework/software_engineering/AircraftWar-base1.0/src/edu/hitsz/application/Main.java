@@ -17,7 +17,7 @@ public class Main {
     public static final int WINDOW_HEIGHT = 768;
 
     /** 可选难度列表 */
-    private static final String[] DIFFICULTIES = {"简单", "普通", "困难", "地狱"};
+    private static final String[] DIFFICULTIES = {"简单", "普通", "困难"};
 
     /**
      * 程序主方法 - 游戏启动的入口点

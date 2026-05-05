@@ -159,6 +159,14 @@ public abstract class AbstractFlyingObject {
     }
 
     /**
+     * 设置 Y 轴方向的速度
+     * @param speedY Y 轴速度值
+     */
+    public void setSpeedY(int speedY) {
+        this.speedY = speedY;
+    }
+
+    /**
      * 获取对象的图片资源
      * 采用懒加载策略：首次调用时从 ImageManager 获取并缓存
      * @return 对象的 BufferedImage 图片，若未找到则返回 null

@@ -63,6 +63,17 @@ public abstract class AbstractAircraft extends AbstractFlyingObject {
     }
 
     /**
+     * 设置生命值
+     * @param hp 新的生命值
+     */
+    public void setHp(int hp) {
+        this.hp = hp;
+        if (this.hp > maxHp) {
+            this.maxHp = this.hp;
+        }
+    }
+
+    /**
      * 设置射击策略
      * @param strategy 新的射击策略
      */

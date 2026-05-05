@@ -7,6 +7,7 @@ import edu.hitsz.dao.ScoreDAO;
 import edu.hitsz.dao.ScoreDAOImpl;
 import edu.hitsz.dao.ScoreRecord;
 import edu.hitsz.item.*;
+import edu.hitsz.strategy.DifficultyConfig;
 
 import javax.swing.*;
 import java.awt.*;
@@ -47,10 +48,10 @@ public class Game extends JPanel {
     private final List<BaseItem> items;
 
     //屏幕中出现的敌机最大数量
-    private final int enemyMaxNumber = 5;
+    private int enemyMaxNumber;
 
-    /** 敌机生成周期（帧数），约 0.8 秒生成一架 */
-    protected double enemySpawnCycle = 20;
+    /** 敌机生成周期（帧数） */
+    protected double enemySpawnCycle;
     /** 敌机生成计数器 */
     private int enemySpawnCounter = 0;
 
@@ -63,14 +64,18 @@ public class Game extends JPanel {
     private int currentSpawnPhase = 0;
 
     /** Boss 生成阈值分数 */
-    private int bossSpawnScore = 500;
+    private int bossSpawnScore;
     /** 标记 Boss 是否已生成 */
     private boolean bossSpawned = false;
 
-    /** 射击周期（帧数），控制英雄机和敌机的射击频率 */
-    protected double shootCycle = 20;
-    /** 射击计数器 */
+    /** 射击周期（帧数），控制英雄机射击频率 */
+    protected double shootCycle;
+    /** 敌机射击周期 */
+    protected int enemyShootCycle;
+    /** 英雄机射击计数器 */
     private int shootCounter = 0;
+    /** 敌机射击计数器 */
+    private int enemyShootCounter = 0;
 
     /** 当前玩家得分 */
     private int score = 0;
@@ -83,6 +88,21 @@ public class Game extends JPanel {
 
     /** 当前游戏难度 */
     private String difficulty = "普通";
+    
+    /** 难度配置对象 */
+    private DifficultyConfig difficultyConfig;
+    
+    /** 游戏运行帧数计数器（用于动态难度） */
+    private int gameFrameCount = 0;
+    
+    /** 难度提升次数 */
+    private int difficultyLevel = 0;
+    
+    /** 敌机基础速度倍率（用于动态难度） */
+    private double enemySpeedMultiplier = 1.0;
+    
+    /** 敌机基础血量倍率（用于动态难度） */
+    private double enemyHpMultiplier = 1.0;
 
     /** DAO 对象 */
     private ScoreDAO scoreDAO;
@@ -121,30 +141,72 @@ public class Game extends JPanel {
     public Game(String difficulty) {
         this();
         this.difficulty = difficulty;
+        this.difficultyConfig = new DifficultyConfig(difficulty);
+        
+        // 应用初始难度配置
+        applyInitialDifficulty();
+        
         ImageManager.setBackgroundImage(difficulty);
-        adjustDifficulty(difficulty);
         
         SoundManager.playBGM();
     }
 
     /**
-     * 根据难度调整游戏参数
+     * 应用初始难度配置
+     */
+    private void applyInitialDifficulty() {
+        this.enemyMaxNumber = difficultyConfig.getMaxEnemyNumber();
+        this.enemySpawnCycle = difficultyConfig.getEnemySpawnCycle();
+        this.shootCycle = difficultyConfig.getHeroShootCycle();
+        this.enemyShootCycle = difficultyConfig.getEnemyShootCycle();
+        this.bossSpawnScore = difficultyConfig.getBossSpawnThreshold();
+    }
+
+    /**
+     * 根据难度调整游戏参数（已废弃，保留以兼容旧代码）
      * @param difficulty 难度等级
      */
     private void adjustDifficulty(String difficulty) {
-        switch (difficulty) {
-            case "简单":
-                bossSpawnScore = 600;
-                break;
-            case "普通":
-                bossSpawnScore = 500;
-                break;
-            case "困难":
-                bossSpawnScore = 400;
-                break;
-            case "地狱":
-                bossSpawnScore = 300;
-                break;
+        System.out.println("难度已设置为: " + difficulty);
+    }
+
+    /**
+     * 根据游戏时间动态调整难度（仅对普通和困难难度有效）
+     */
+    private void updateDynamicDifficulty() {
+        if (!difficultyConfig.isDynamicDifficulty()) {
+            return;
+        }
+        
+        // 检查是否需要提升难度
+        if (gameFrameCount % difficultyConfig.getDifficultyIncreaseInterval() == 0 && gameFrameCount > 0) {
+            difficultyLevel++;
+            System.out.println("难度提升！当前难度等级: " + difficultyLevel);
+            
+            // 敌机产生周期减少（敌机出现更频繁）
+            if (difficultyConfig.isEnemySpawnCycleDecreases()) {
+                enemySpawnCycle = Math.max(8, enemySpawnCycle * 0.9);
+            }
+            
+            // 敌机速度增加
+            if (difficultyConfig.isEnemySpeedIncreases()) {
+                enemySpeedMultiplier *= 1.1;
+            }
+            
+            // 敌机血量增加
+            if (difficultyConfig.isEnemyHpIncreases()) {
+                enemyHpMultiplier *= 1.15;
+            }
+            
+            // 英雄机射击周期增加（射击变慢）
+            if (difficultyConfig.isHeroShootCycleIncreases()) {
+                shootCycle = Math.min(40, shootCycle * 1.1);
+            }
+            
+            // 敌机射击周期减少（敌机射击更快）
+            if (difficultyConfig.isEnemyShootCycleDecreases()) {
+                enemyShootCycle = (int) Math.max(10, enemyShootCycle * 0.9);
+            }
         }
     }
 
@@ -158,6 +220,11 @@ public class Game extends JPanel {
         TimerTask task = new TimerTask() {
             @Override
             public void run() {
+                // 更新游戏帧数计数器
+                gameFrameCount++;
+                
+                // 动态难度调整
+                updateDynamicDifficulty();
 
                 phaseCounter++;
                 if (phaseCounter >= phaseCycle) {
@@ -165,10 +232,21 @@ public class Game extends JPanel {
                     currentSpawnPhase = (currentSpawnPhase + 1) % 3;
                 }
 
-                if (!bossSpawned && score >= bossSpawnScore) {
+                // Boss生成逻辑
+                if (!bossSpawned && difficultyConfig.isAllowBossSpawn() && score >= bossSpawnScore) {
                     bossSpawned = true;
-                    enemyAircrafts.add(bossPrototype.createInstance(0, 0));
-                    System.out.println("🔥 Boss 出现！");
+                    // 困难难度下，每次召唤Boss提升血量
+                    int bossHp = 300;
+                    if (difficultyConfig.isBossHpIncreases()) {
+                        bossHp = 300 + (difficultyLevel * 50);
+                    }
+                    
+                    // 创建Boss实例并设置血量
+                    EnemyAircraft boss = bossPrototype.createInstance(0, 0);
+                    boss.setHp(bossHp);
+                    enemyAircrafts.add(boss);
+                    
+                    System.out.println("🔥 Boss 出现！血量: " + bossHp);
                     SoundManager.playBossBGM();
                 }
 
@@ -186,11 +264,28 @@ public class Game extends JPanel {
                             specialEnemy = eliteProEnemyPrototype;
                         }
                         
-                        if (Math.random() < 0.7) {
-                            enemyAircrafts.add(mobEnemyPrototype.createInstance(0, 0));
+                        double random = Math.random();
+                        EnemyAircraft newEnemy = null;
+                        
+                        if (random < difficultyConfig.getMobSpawnProbability()) {
+                            newEnemy = mobEnemyPrototype.createInstance(0, 0);
+                        } else if (random < difficultyConfig.getMobSpawnProbability() + difficultyConfig.getEliteSpawnProbability()) {
+                            newEnemy = specialEnemy.createInstance(0, 0);
+                        } else if (random < difficultyConfig.getMobSpawnProbability() + difficultyConfig.getEliteSpawnProbability() + difficultyConfig.getElitePlusSpawnProbability()) {
+                            newEnemy = elitePlusEnemyPrototype.createInstance(0, 0);
                         } else {
-                            enemyAircrafts.add(specialEnemy.createInstance(0, 0));
+                            newEnemy = eliteProEnemyPrototype.createInstance(0, 0);
                         }
+                        
+                        // 应用动态难度调整（仅对非Boss敌机）
+                        if (!(newEnemy instanceof Boss) && difficultyConfig.isDynamicDifficulty()) {
+                            // 调整敌机速度
+                            newEnemy.setSpeedY((int)(newEnemy.getSpeedY() * enemySpeedMultiplier));
+                            // 调整敌机血量
+                            newEnemy.setHp((int)(newEnemy.getHp() * enemyHpMultiplier));
+                        }
+                        
+                        enemyAircrafts.add(newEnemy);
                     }
                 }
 
@@ -216,6 +311,11 @@ public class Game extends JPanel {
         if (shootCounter >= shootCycle) {
             shootCounter = 0;
             heroBullets.addAll(heroAircraft.shoot());
+        }
+        
+        enemyShootCounter++;
+        if (enemyShootCounter >= enemyShootCycle) {
+            enemyShootCounter = 0;
             for (AbstractAircraft enemyAircraft : enemyAircrafts) {
                 enemyBullets.addAll(enemyAircraft.shoot());
             }
