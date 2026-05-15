@@ -1,0 +1,12 @@
+# 静态库
+static_library("hello") {
+    sources = [
+        "hello.c"                           # 指定源文件
+    ]
+
+    include_dirs = [                        # 必要头文件路径
+        "//utils/native/lite/include",      # 基础工具库
+        "//kernel/liteos_m/kal/cmsis",      # 系统内核
+        "//commonlibrary/utils_lite/include",
+    ]
+}
